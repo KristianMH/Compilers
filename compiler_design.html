@@ -1,0 +1,1703 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.9" />
+<title>Fasto 2015 Compiler Design Document</title>
+<style type="text/css">
+/* Shared CSS for AsciiDoc xhtml11 and html5 backends */
+
+/* Default font. */
+body {
+  font-family: Georgia,serif;
+}
+
+/* Title font. */
+h1, h2, h3, h4, h5, h6,
+div.title, caption.title,
+thead, p.table.header,
+#toctitle,
+#author, #revnumber, #revdate, #revremark,
+#footer {
+  font-family: Arial,Helvetica,sans-serif;
+}
+
+body {
+  margin: 1em 5% 1em 5%;
+}
+
+a {
+  color: blue;
+  text-decoration: underline;
+}
+a:visited {
+  color: fuchsia;
+}
+
+em {
+  font-style: italic;
+  color: navy;
+}
+
+strong {
+  font-weight: bold;
+  color: #083194;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #527bbd;
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
+  line-height: 1.3;
+}
+
+h1, h2, h3 {
+  border-bottom: 2px solid silver;
+}
+h2 {
+  padding-top: 0.5em;
+}
+h3 {
+  float: left;
+}
+h3 + * {
+  clear: left;
+}
+h5 {
+  font-size: 1.0em;
+}
+
+div.sectionbody {
+  margin-left: 0;
+}
+
+hr {
+  border: 1px solid silver;
+}
+
+p {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+ul, ol, li > p {
+  margin-top: 0;
+}
+ul > li     { color: #aaa; }
+ul > li > * { color: black; }
+
+.monospaced, code, pre {
+  font-family: "Courier New", Courier, monospace;
+  font-size: inherit;
+  color: navy;
+  padding: 0;
+  margin: 0;
+}
+pre {
+  white-space: pre-wrap;
+}
+
+#author {
+  color: #527bbd;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+#email {
+}
+#revnumber, #revdate, #revremark {
+}
+
+#footer {
+  font-size: small;
+  border-top: 2px solid silver;
+  padding-top: 0.5em;
+  margin-top: 4.0em;
+}
+#footer-text {
+  float: left;
+  padding-bottom: 0.5em;
+}
+#footer-badges {
+  float: right;
+  padding-bottom: 0.5em;
+}
+
+#preamble {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+div.imageblock, div.exampleblock, div.verseblock,
+div.quoteblock, div.literalblock, div.listingblock, div.sidebarblock,
+div.admonitionblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+div.admonitionblock {
+  margin-top: 2.0em;
+  margin-bottom: 2.0em;
+  margin-right: 10%;
+  color: #606060;
+}
+
+div.content { /* Block element content. */
+  padding: 0;
+}
+
+/* Block element titles. */
+div.title, caption.title {
+  color: #527bbd;
+  font-weight: bold;
+  text-align: left;
+  margin-top: 1.0em;
+  margin-bottom: 0.5em;
+}
+div.title + * {
+  margin-top: 0;
+}
+
+td div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content + div.title {
+  margin-top: 0.0em;
+}
+
+div.sidebarblock > div.content {
+  background: #ffffee;
+  border: 1px solid #dddddd;
+  border-left: 4px solid #f0f0f0;
+  padding: 0.5em;
+}
+
+div.listingblock > div.content {
+  border: 1px solid #dddddd;
+  border-left: 5px solid #f0f0f0;
+  background: #f8f8f8;
+  padding: 0.5em;
+}
+
+div.quoteblock, div.verseblock {
+  padding-left: 1.0em;
+  margin-left: 1.0em;
+  margin-right: 10%;
+  border-left: 5px solid #f0f0f0;
+  color: #888;
+}
+
+div.quoteblock > div.attribution {
+  padding-top: 0.5em;
+  text-align: right;
+}
+
+div.verseblock > pre.content {
+  font-family: inherit;
+  font-size: inherit;
+}
+div.verseblock > div.attribution {
+  padding-top: 0.75em;
+  text-align: left;
+}
+/* DEPRECATED: Pre version 8.2.7 verse style literal block. */
+div.verseblock + div.attribution {
+  text-align: left;
+}
+
+div.admonitionblock .icon {
+  vertical-align: top;
+  font-size: 1.1em;
+  font-weight: bold;
+  text-decoration: underline;
+  color: #527bbd;
+  padding-right: 0.5em;
+}
+div.admonitionblock td.content {
+  padding-left: 0.5em;
+  border-left: 3px solid #dddddd;
+}
+
+div.exampleblock > div.content {
+  border-left: 3px solid #dddddd;
+  padding-left: 0.5em;
+}
+
+div.imageblock div.content { padding-left: 0; }
+span.image img { border-style: none; vertical-align: text-bottom; }
+a.image:visited { color: white; }
+
+dl {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+dt {
+  margin-top: 0.5em;
+  margin-bottom: 0;
+  font-style: normal;
+  color: navy;
+}
+dd > *:first-child {
+  margin-top: 0.1em;
+}
+
+ul, ol {
+    list-style-position: outside;
+}
+ol.arabic {
+  list-style-type: decimal;
+}
+ol.loweralpha {
+  list-style-type: lower-alpha;
+}
+ol.upperalpha {
+  list-style-type: upper-alpha;
+}
+ol.lowerroman {
+  list-style-type: lower-roman;
+}
+ol.upperroman {
+  list-style-type: upper-roman;
+}
+
+div.compact ul, div.compact ol,
+div.compact p, div.compact p,
+div.compact div, div.compact div {
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+}
+
+tfoot {
+  font-weight: bold;
+}
+td > div.verse {
+  white-space: pre;
+}
+
+div.hdlist {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+div.hdlist tr {
+  padding-bottom: 15px;
+}
+dt.hdlist1.strong, td.hdlist1.strong {
+  font-weight: bold;
+}
+td.hdlist1 {
+  vertical-align: top;
+  font-style: normal;
+  padding-right: 0.8em;
+  color: navy;
+}
+td.hdlist2 {
+  vertical-align: top;
+}
+div.hdlist.compact tr {
+  margin: 0;
+  padding-bottom: 0;
+}
+
+.comment {
+  background: yellow;
+}
+
+.footnote, .footnoteref {
+  font-size: 0.8em;
+}
+
+span.footnote, span.footnoteref {
+  vertical-align: super;
+}
+
+#footnotes {
+  margin: 20px 0 20px 0;
+  padding: 7px 0 0 0;
+}
+
+#footnotes div.footnote {
+  margin: 0 0 5px 0;
+}
+
+#footnotes hr {
+  border: none;
+  border-top: 1px solid silver;
+  height: 1px;
+  text-align: left;
+  margin-left: 0;
+  width: 20%;
+  min-width: 100px;
+}
+
+div.colist td {
+  padding-right: 0.5em;
+  padding-bottom: 0.3em;
+  vertical-align: top;
+}
+div.colist td img {
+  margin-top: 0.3em;
+}
+
+@media print {
+  #footer-badges { display: none; }
+}
+
+#toc {
+  margin-bottom: 2.5em;
+}
+
+#toctitle {
+  color: #527bbd;
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-top: 1.0em;
+  margin-bottom: 0.1em;
+}
+
+div.toclevel0, div.toclevel1, div.toclevel2, div.toclevel3, div.toclevel4 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+div.toclevel2 {
+  margin-left: 2em;
+  font-size: 0.9em;
+}
+div.toclevel3 {
+  margin-left: 4em;
+  font-size: 0.9em;
+}
+div.toclevel4 {
+  margin-left: 6em;
+  font-size: 0.9em;
+}
+
+span.aqua { color: aqua; }
+span.black { color: black; }
+span.blue { color: blue; }
+span.fuchsia { color: fuchsia; }
+span.gray { color: gray; }
+span.green { color: green; }
+span.lime { color: lime; }
+span.maroon { color: maroon; }
+span.navy { color: navy; }
+span.olive { color: olive; }
+span.purple { color: purple; }
+span.red { color: red; }
+span.silver { color: silver; }
+span.teal { color: teal; }
+span.white { color: white; }
+span.yellow { color: yellow; }
+
+span.aqua-background { background: aqua; }
+span.black-background { background: black; }
+span.blue-background { background: blue; }
+span.fuchsia-background { background: fuchsia; }
+span.gray-background { background: gray; }
+span.green-background { background: green; }
+span.lime-background { background: lime; }
+span.maroon-background { background: maroon; }
+span.navy-background { background: navy; }
+span.olive-background { background: olive; }
+span.purple-background { background: purple; }
+span.red-background { background: red; }
+span.silver-background { background: silver; }
+span.teal-background { background: teal; }
+span.white-background { background: white; }
+span.yellow-background { background: yellow; }
+
+span.big { font-size: 2em; }
+span.small { font-size: 0.6em; }
+
+span.underline { text-decoration: underline; }
+span.overline { text-decoration: overline; }
+span.line-through { text-decoration: line-through; }
+
+div.unbreakable { page-break-inside: avoid; }
+
+
+/*
+ * xhtml11 specific
+ *
+ * */
+
+div.tableblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+div.tableblock > table {
+  border: 3px solid #527bbd;
+}
+thead, p.table.header {
+  font-weight: bold;
+  color: #527bbd;
+}
+p.table {
+  margin-top: 0;
+}
+/* Because the table frame attribute is overriden by CSS in most browsers. */
+div.tableblock > table[frame="void"] {
+  border-style: none;
+}
+div.tableblock > table[frame="hsides"] {
+  border-left-style: none;
+  border-right-style: none;
+}
+div.tableblock > table[frame="vsides"] {
+  border-top-style: none;
+  border-bottom-style: none;
+}
+
+
+/*
+ * html5 specific
+ *
+ * */
+
+table.tableblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+thead, p.tableblock.header {
+  font-weight: bold;
+  color: #527bbd;
+}
+p.tableblock {
+  margin-top: 0;
+}
+table.tableblock {
+  border-width: 3px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-color: #527bbd;
+  border-collapse: collapse;
+}
+th.tableblock, td.tableblock {
+  border-width: 1px;
+  padding: 4px;
+  border-style: solid;
+  border-color: #527bbd;
+}
+
+table.tableblock.frame-topbot {
+  border-left-style: hidden;
+  border-right-style: hidden;
+}
+table.tableblock.frame-sides {
+  border-top-style: hidden;
+  border-bottom-style: hidden;
+}
+table.tableblock.frame-none {
+  border-style: hidden;
+}
+
+th.tableblock.halign-left, td.tableblock.halign-left {
+  text-align: left;
+}
+th.tableblock.halign-center, td.tableblock.halign-center {
+  text-align: center;
+}
+th.tableblock.halign-right, td.tableblock.halign-right {
+  text-align: right;
+}
+
+th.tableblock.valign-top, td.tableblock.valign-top {
+  vertical-align: top;
+}
+th.tableblock.valign-middle, td.tableblock.valign-middle {
+  vertical-align: middle;
+}
+th.tableblock.valign-bottom, td.tableblock.valign-bottom {
+  vertical-align: bottom;
+}
+
+
+/*
+ * manpage specific
+ *
+ * */
+
+body.manpage h1 {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  border-top: 2px solid silver;
+  border-bottom: 2px solid silver;
+}
+body.manpage h2 {
+  border-style: none;
+}
+body.manpage div.sectionbody {
+  margin-left: 3em;
+}
+
+@media print {
+  body.manpage div#toc { display: none; }
+}
+
+
+</style>
+<script type="text/javascript">
+/*<![CDATA[*/
+var asciidoc = {  // Namespace.
+
+/////////////////////////////////////////////////////////////////////
+// Table Of Contents generator
+/////////////////////////////////////////////////////////////////////
+
+/* Author: Mihai Bazon, September 2002
+ * http://students.infoiasi.ro/~mishoo
+ *
+ * Table Of Content generator
+ * Version: 0.4
+ *
+ * Feel free to use this script under the terms of the GNU General Public
+ * License, as long as you do not remove or alter this notice.
+ */
+
+ /* modified by Troy D. Hanson, September 2006. License: GPL */
+ /* modified by Stuart Rackham, 2006, 2009. License: GPL */
+
+// toclevels = 1..4.
+toc: function (toclevels) {
+
+  function getText(el) {
+    var text = "";
+    for (var i = el.firstChild; i != null; i = i.nextSibling) {
+      if (i.nodeType == 3 /* Node.TEXT_NODE */) // IE doesn't speak constants.
+        text += i.data;
+      else if (i.firstChild != null)
+        text += getText(i);
+    }
+    return text;
+  }
+
+  function TocEntry(el, text, toclevel) {
+    this.element = el;
+    this.text = text;
+    this.toclevel = toclevel;
+  }
+
+  function tocEntries(el, toclevels) {
+    var result = new Array;
+    var re = new RegExp('[hH]([1-'+(toclevels+1)+'])');
+    // Function that scans the DOM tree for header elements (the DOM2
+    // nodeIterator API would be a better technique but not supported by all
+    // browsers).
+    var iterate = function (el) {
+      for (var i = el.firstChild; i != null; i = i.nextSibling) {
+        if (i.nodeType == 1 /* Node.ELEMENT_NODE */) {
+          var mo = re.exec(i.tagName);
+          if (mo && (i.getAttribute("class") || i.getAttribute("className")) != "float") {
+            result[result.length] = new TocEntry(i, getText(i), mo[1]-1);
+          }
+          iterate(i);
+        }
+      }
+    }
+    iterate(el);
+    return result;
+  }
+
+  var toc = document.getElementById("toc");
+  if (!toc) {
+    return;
+  }
+
+  // Delete existing TOC entries in case we're reloading the TOC.
+  var tocEntriesToRemove = [];
+  var i;
+  for (i = 0; i < toc.childNodes.length; i++) {
+    var entry = toc.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div'
+     && entry.getAttribute("class")
+     && entry.getAttribute("class").match(/^toclevel/))
+      tocEntriesToRemove.push(entry);
+  }
+  for (i = 0; i < tocEntriesToRemove.length; i++) {
+    toc.removeChild(tocEntriesToRemove[i]);
+  }
+
+  // Rebuild TOC entries.
+  var entries = tocEntries(document.getElementById("content"), toclevels);
+  for (var i = 0; i < entries.length; ++i) {
+    var entry = entries[i];
+    if (entry.element.id == "")
+      entry.element.id = "_toc_" + i;
+    var a = document.createElement("a");
+    a.href = "#" + entry.element.id;
+    a.appendChild(document.createTextNode(entry.text));
+    var div = document.createElement("div");
+    div.appendChild(a);
+    div.className = "toclevel" + entry.toclevel;
+    toc.appendChild(div);
+  }
+  if (entries.length == 0)
+    toc.parentNode.removeChild(toc);
+},
+
+
+/////////////////////////////////////////////////////////////////////
+// Footnotes generator
+/////////////////////////////////////////////////////////////////////
+
+/* Based on footnote generation code from:
+ * http://www.brandspankingnew.net/archive/2005/07/format_footnote.html
+ */
+
+footnotes: function () {
+  // Delete existing footnote entries in case we're reloading the footnodes.
+  var i;
+  var noteholder = document.getElementById("footnotes");
+  if (!noteholder) {
+    return;
+  }
+  var entriesToRemove = [];
+  for (i = 0; i < noteholder.childNodes.length; i++) {
+    var entry = noteholder.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div' && entry.getAttribute("class") == "footnote")
+      entriesToRemove.push(entry);
+  }
+  for (i = 0; i < entriesToRemove.length; i++) {
+    noteholder.removeChild(entriesToRemove[i]);
+  }
+
+  // Rebuild footnote entries.
+  var cont = document.getElementById("content");
+  var spans = cont.getElementsByTagName("span");
+  var refs = {};
+  var n = 0;
+  for (i=0; i<spans.length; i++) {
+    if (spans[i].className == "footnote") {
+      n++;
+      var note = spans[i].getAttribute("data-note");
+      if (!note) {
+        // Use [\s\S] in place of . so multi-line matches work.
+        // Because JavaScript has no s (dotall) regex flag.
+        note = spans[i].innerHTML.match(/\s*\[([\s\S]*)]\s*/)[1];
+        spans[i].innerHTML =
+          "[<a id='_footnoteref_" + n + "' href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+        spans[i].setAttribute("data-note", note);
+      }
+      noteholder.innerHTML +=
+        "<div class='footnote' id='_footnote_" + n + "'>" +
+        "<a href='#_footnoteref_" + n + "' title='Return to text'>" +
+        n + "</a>. " + note + "</div>";
+      var id =spans[i].getAttribute("id");
+      if (id != null) refs["#"+id] = n;
+    }
+  }
+  if (n == 0)
+    noteholder.parentNode.removeChild(noteholder);
+  else {
+    // Process footnoterefs.
+    for (i=0; i<spans.length; i++) {
+      if (spans[i].className == "footnoteref") {
+        var href = spans[i].getElementsByTagName("a")[0].getAttribute("href");
+        href = href.match(/#.*/)[0];  // Because IE return full URL.
+        n = refs[href];
+        spans[i].innerHTML =
+          "[<a href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+      }
+    }
+  }
+},
+
+install: function(toclevels) {
+  var timerId;
+
+  function reinstall() {
+    asciidoc.footnotes();
+    if (toclevels) {
+      asciidoc.toc(toclevels);
+    }
+  }
+
+  function reinstallAndRemoveTimer() {
+    clearInterval(timerId);
+    reinstall();
+  }
+
+  timerId = setInterval(reinstall, 500);
+  if (document.addEventListener)
+    document.addEventListener("DOMContentLoaded", reinstallAndRemoveTimer, false);
+  else
+    window.onload = reinstallAndRemoveTimer;
+}
+
+}
+asciidoc.install();
+/*]]>*/
+</script>
+</head>
+<body class="article">
+<div id="header">
+<h1>Fasto 2015 Compiler Design Document</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>This documents describes the overall design of the Fasto compiler for
+the 2015 iteration of the course Introduction to Compilers at DIKU.</p></div>
+<div class="paragraph"><p>The Fasto compiler is implemented in Standard ML and consists of a
+number of modules, each implementing one analysis or transformation
+step.  A <em>driver program</em> is responsible for reading Fasto source
+programs from the file system, passing the text to the parser, passing
+the resulting AST through various compiler passes, and finally writing
+the generated assembly code back to a file.  The Fasto compiler does
+not itself contain an assembler, but instead produces assembly code
+suitable for use in the MARS MIPS
+simulator.<span class="footnote"><br />[<a href="http://courses.missouristate.edu/KenVollmar/MARS/">http://courses.missouristate.edu/KenVollmar/MARS/</a>]<br /></span></p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_description_of_the_fasto_compiler_modules">Description of the Fasto compiler modules</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>This section introduces the compiler&#8217;s structure and explains some
+details and reasons for particular choices.</p></div>
+<div class="sect2">
+<h3 id="_lexer_parser_and_symbol_table">Lexer, Parser and Symbol Table</h3>
+<div class="paragraph"><p>The lexer and parser are implemented in files <code>Lexer.lex</code> and
+<code>Parser.grm</code>, respectively.  The lexical rules and grammar have
+already been described in the main project document.</p></div>
+<div class="paragraph"><p>File <code>SymTab.sml</code> provides a polymorphic implementation of the symbol
+table.  The symbol table is simply a list of tuples, in which the
+first term is a string, denoting the name of a variable/function, and
+the second term is the information associated to that name. The type
+of the second term is polymorphic, i.e. different types of information
+will be stored in different tables during processing.  The main
+functions are: (i) <code>bind</code>, which adds a name-value pair to the symbol
+table (potentially hiding an older entry), and (ii) <code>lookup</code>.
+Function <code>lookup</code> receives as input the name of a variable, <code>n</code>, and
+searches the symbol table to find the closest binding for <code>n</code>. If no
+such binding exists then option <code>NONE</code> is returned, otherwise <code>SOME
+m</code>, where <code>m</code> is the information associated with <code>n</code>.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_abstract_syntax_representation">Abstract Syntax Representation</h3>
+<div class="paragraph"><p>The abstract syntax representation is defined in the file Fasto.sml:
+the entire program has either type <code>Fasto.UnknownTypes.Prog</code> or
+<code>Fasto.KnownTypes.Prog</code>, depending on which phase the compiler is in.
+A program is a list of function declarations.  A function declaration
+has type <code>FunDec</code>.  Expressions and types are built by the
+constructors of types <code>Exp</code> and <code>Type</code>, respectively.</p></div>
+<div class="paragraph"><p><code>Exp</code>, <code>FunDec</code>, <code>Prog</code> and other central constructors are located
+inside the <code>FastoFn</code> functor.  This means that whenever <code>TypeAnnot</code>
+occurs, the actual type is <code>unit</code> (the SML type of the value <code>()</code>) if
+they are used in the <code>UnknownTypes</code> structure, or <code>Type</code> if in the
+<code>KnownTypes</code> structure.  After parsing, a program uses the
+<code>UnknownTypes</code> version of <code>TypeAnnot</code>, namely <code>unit</code>, and after type
+checking, a program uses the <code>KnownTypes</code> version&#8201;&#8212;&#8201;<code>Type</code>.</p></div>
+<div class="paragraph"><p>Note that several type constructors of <code>Exp</code> contain <code>Type</code> nodes.
+For instance the indexing constructor is declared as <code>Index of string
+* Exp * TypeAnnot * pos</code>.  These type nodes are replaced by the
+correct type by the type checker, and used in the MIPS code generation
+phase. For example, generating MIPS code for array indexing (<code>a[i]</code>)
+requires to know whether the element type is stored in one byte or in
+one word (four bytes), i.e. whether to use a load-byte or load-word
+instruction.</p></div>
+<div class="paragraph"><p><code>Fasto.sml</code> also provides functions to pretty print a program
+(prettyPrint) a function (ppFun), a type (ppType), or an expression
+(ppExp).  Pretty printing can be used for user-friendlier error
+messages and for debugging.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_interpreter">Interpreter</h3>
+<div class="paragraph"><p>The interpreter is implemented in file <code>Interpret.sml</code>.  The entry
+point is function <code>evalPgm</code>, which builds the symbol table for
+functions and starts the interpretation of the program by interpreting
+function <code>main</code>.</p></div>
+<div class="paragraph"><p>Interpreting a (call to a) function is implemented by function
+<code>callFun</code>, which: (i) evaluates the function arguments, (ii) creates a
+new symbol table for variables and binds the evaluated arguments to
+the function&#8217;s formal arguments, and (iii) continues by interpreting
+the expression that corresponds to the body of the function.</p></div>
+<div class="paragraph"><p>Finally, interpreting an expression is implemented by <code>evalExp</code>
+via case analysis on the type constructors of <code>Exp</code>.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_type_checking">Type Checking</h3>
+<div class="paragraph"><p>The type checker is implemented in file <code>Type.sml</code>.  The entry point is</p></div>
+<div class="paragraph"><p><code>checkProgram : Fasto.UnknownTypes.Prog -&gt; Fasto.KnownTypes.Prog</code></p></div>
+<div class="paragraph"><p>which verifies that all functions in the program have the declared
+type and annotates the nodes.</p></div>
+<div class="paragraph"><p>Type checking a function means to verify that the result type of the
+function matches the type of the function-body expression, given the
+formal parameters have the declared types.  Typechecking a function
+<em>application</em> means to verify that the types of the actual and the
+formal parameters match.</p></div>
+<div class="paragraph"><p>Expressions are type-checked recursively, building types in a bottom-up fashion.
+For instance, type-checking an <code>if-then-else</code> means to
+check that the condition is boolean, and to determine the types of the <code>then</code>
+and <code>else</code> sub-expressions and to verify that these types are the same.</p></div>
+<div class="paragraph"><p>Type checking an expression is mainly implemented by <code>expType</code> via
+case analysis on the type constructors of <code>Exp</code>.  <em>Your changes to the
+type checker will mainly extend <code>expType</code>'s implementation.</em></p></div>
+<div class="paragraph"><p>As mentioned, type information also needs to be passed to the MIPS
+code generator, especially for arrays and for the built-in <code>write</code>
+function.  Therefore, <code>checkProgram</code> builds a new abstract-syntax
+representation in which the type information of various
+<code>Fasto.UnknownTypes.Exp</code> constructors are changed to the correct
+types, represented in <code>Fasto.KnownTypes.Exp</code> (for instance the type of
+the array for array-indexing <code>a[i]</code>).</p></div>
+</div>
+<div class="sect2">
+<h3 id="_high_level_optimisations">High-Level Optimisations</h3>
+<div class="paragraph"><p>An optimising compiler is typically organised as a set of <em>passes</em>,
+each of which take as input a program, and produce as output an
+equivalent - but optimised - program.  The Fasto compiler follows this
+design, and implements each pass as a distinct module.  All but one of
+these are fully implemented for you, but will be covered for
+completeness.</p></div>
+<div class="sect3">
+<h4 id="_code_callgraph_code"><code>CallGraph</code></h4>
+<div class="paragraph"><p>This module is not an optimisation pass per se, but is a module
+containing facilities for computing the <em>call graph</em> of a Fasto
+program, which is used in some optimisations.  The call graph contains
+information about which functions are called directly or indirectly by
+a given function.  As an important special case, if a function is
+recursive (even indirectly), the call graph will register it as
+calling itself.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_code_inlining_code"><code>Inlining</code></h4>
+<div class="paragraph"><p>Function inlining is a transformation in which the body of a function
+is substituted for a call to the function.  This has two main
+benefits: first, it removes the overhead of the function call.
+Second, and more importantly, it acts as an <em>enabling optimisation</em>,
+in that most optimisations are not able to cross function call
+boundaries, and thus may only be applicable once a function has been
+inlined.</p></div>
+<div class="paragraph"><p>Inlining is not free, and can result in a expontential increase in
+code size, which can negatively impact performance.  Production
+compilers use heuristics to determine when inlining should happen
+(usually based on the size of the function), but in Fasto we are more
+liberal: we aggressively inline all non-recursive functions.</p></div>
+<div class="listingblock">
+<div class="title">Before inlining</div>
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">fun</span></span> <span style="color: #009900">int</span> f<span style="color: #990000">(</span><span style="color: #009900">int</span> x<span style="color: #990000">,</span> <span style="color: #009900">int</span> y<span style="color: #990000">)</span> <span style="color: #990000">=</span>
+  <span style="color: #990000">(</span>x<span style="color: #990000">+</span><span style="color: #993399">2</span><span style="color: #990000">)</span> <span style="color: #990000">*</span> <span style="color: #990000">(</span>y<span style="color: #990000">-</span><span style="color: #993399">2</span><span style="color: #990000">)</span>
+
+<span style="font-weight: bold"><span style="color: #0000FF">fun</span></span> <span style="color: #009900">int</span> main<span style="color: #990000">()</span> <span style="color: #990000">=</span>
+  <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> a <span style="color: #990000">=</span> read<span style="color: #990000">(</span><span style="color: #009900">int</span><span style="color: #990000">)</span> <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>
+  <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> b <span style="color: #990000">=</span> f<span style="color: #990000">(</span>a<span style="color: #990000">,</span> <span style="color: #993399">2</span><span style="color: #990000">)</span> <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>
+  c</tt></pre></div></div>
+<div class="listingblock">
+<div class="title">After inlining</div>
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">fun</span></span> <span style="color: #009900">int</span> f<span style="color: #990000">(</span><span style="color: #009900">int</span> x<span style="color: #990000">,</span> <span style="color: #009900">int</span> y<span style="color: #990000">)</span> <span style="color: #990000">=</span>
+  <span style="color: #990000">(</span>x<span style="color: #990000">+</span><span style="color: #993399">2</span><span style="color: #990000">)</span> <span style="color: #990000">*</span> <span style="color: #990000">(</span>y<span style="color: #990000">-</span><span style="color: #993399">2</span><span style="color: #990000">)</span>
+
+<span style="font-weight: bold"><span style="color: #0000FF">fun</span></span> <span style="color: #009900">int</span> main<span style="color: #990000">()</span> <span style="color: #990000">=</span>
+  <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> a <span style="color: #990000">=</span> read<span style="color: #990000">(</span><span style="color: #009900">int</span><span style="color: #990000">)</span> <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>
+  <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> b <span style="color: #990000">=</span>
+    <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> x <span style="color: #990000">=</span> a <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> y <span style="color: #990000">=</span> <span style="color: #993399">2</span> <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>
+    <span style="color: #990000">(</span>x <span style="color: #990000">+</span> <span style="color: #993399">2</span><span style="color: #990000">)</span> <span style="color: #990000">*</span> <span style="color: #990000">(</span>y <span style="color: #990000">-</span> <span style="color: #993399">2</span><span style="color: #990000">)</span>
+  <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>
+  b</tt></pre></div></div>
+<div class="paragraph"><p>The figure above illustrates the process of inlining a function <code>f</code> -
+note that the original function still exists in the program, and that
+the resulting code is somewhat awkward.  It is the job of later
+optimisations to clean this up.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_code_copyconstpropfold_code"><code>CopyConstPropFold</code></h4>
+<div class="paragraph"><p>This module contains two conceptually separate, but
+implementation-wise heavily linked optimisations: <em>copy propagation</em>
+and <em>constant folding</em>.  In copy propagation, we react to bindings
+such as <code>let x = a</code> or <code>let y = 2</code>, which merely "copy" a variable or
+constant, and replace subsequent uses of <code>x</code> and <code>y</code> with <code>a and `2</code>
+respectively.  In constant folding, we simplify expressions whose
+value can be determined at compile-time.  In the running example, once
+we have performed the substitution <code>y =&gt; 2</code> in the expression <code>y-2</code>,
+we obtain <code>2-2</code>, which, since it contains only constants, can be
+evaluated at compile-time to <code>0</code>.  In the original expression <code>(x + 2)
+* (y - 2)</code> we thus produce <code>(x + 2) * 0</code>, which can again be
+constant-folded to <code>0</code>.</p></div>
+<div class="listingblock">
+<div class="title">Before copy/const prop/fold</div>
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">fun</span></span> <span style="color: #009900">int</span> f<span style="color: #990000">(</span><span style="color: #009900">int</span> x<span style="color: #990000">,</span> <span style="color: #009900">int</span> y<span style="color: #990000">)</span> <span style="color: #990000">=</span>
+  <span style="color: #990000">(</span>x<span style="color: #990000">+</span><span style="color: #993399">2</span><span style="color: #990000">)</span> <span style="color: #990000">*</span> <span style="color: #990000">(</span>y<span style="color: #990000">-</span><span style="color: #993399">2</span><span style="color: #990000">)</span>
+
+<span style="font-weight: bold"><span style="color: #0000FF">fun</span></span> <span style="color: #009900">int</span> main<span style="color: #990000">()</span> <span style="color: #990000">=</span>
+  <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> a <span style="color: #990000">=</span> read<span style="color: #990000">(</span><span style="color: #009900">int</span><span style="color: #990000">)</span> <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>
+  <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> b <span style="color: #990000">=</span>
+    <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> x <span style="color: #990000">=</span> a <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> y <span style="color: #990000">=</span> <span style="color: #993399">2</span> <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>
+    <span style="color: #990000">(</span>x <span style="color: #990000">+</span> <span style="color: #993399">2</span><span style="color: #990000">)</span> <span style="color: #990000">*</span> <span style="color: #990000">(</span>y <span style="color: #990000">-</span> <span style="color: #993399">2</span><span style="color: #990000">)</span>
+  <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>
+  b</tt></pre></div></div>
+<div class="listingblock">
+<div class="title">After copy/const prop/fold</div>
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">fun</span></span> <span style="color: #009900">int</span> f<span style="color: #990000">(</span><span style="color: #009900">int</span> x<span style="color: #990000">,</span> <span style="color: #009900">int</span> y<span style="color: #990000">)</span> <span style="color: #990000">=</span>
+  <span style="color: #990000">(</span>x<span style="color: #990000">+</span><span style="color: #993399">2</span><span style="color: #990000">)</span> <span style="color: #990000">*</span> <span style="color: #990000">(</span>y<span style="color: #990000">-</span><span style="color: #993399">2</span><span style="color: #990000">)</span>
+
+<span style="font-weight: bold"><span style="color: #0000FF">fun</span></span> <span style="color: #009900">int</span> main<span style="color: #990000">()</span> <span style="color: #990000">=</span>
+  <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> a <span style="color: #990000">=</span> read<span style="color: #990000">(</span><span style="color: #009900">int</span><span style="color: #990000">)</span> <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>
+  <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> x <span style="color: #990000">=</span> a <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>
+  <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> y <span style="color: #990000">=</span> <span style="color: #993399">2</span> <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>
+  <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> b <span style="color: #990000">=</span> <span style="color: #993399">0</span>
+  <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>
+  b</tt></pre></div></div>
+<div class="paragraph"><p>Note that the program still contains the now-unused bindings for <code>a</code>,
+<code>x</code> and <code>y</code> - these are removed in the next pass.</p></div>
+<div class="paragraph"><p><strong>This pass has not been fully implemented in the handed-out code, and
+ its completion is the subject of Task 3.</strong></p></div>
+</div>
+<div class="sect3">
+<h4 id="_code_deadbindingremoval_code"><code>DeadBindingRemoval</code></h4>
+<div class="paragraph"><p>The purpose of this optimization is to remove variable bindings that
+are not used.  This is conceptually quite simple, but complicated by
+the fact that we cannot remove bindings whose expressions perform IO,
+as this would change the semantics of the program.</p></div>
+<div class="listingblock">
+<div class="title">Before dead variable removal</div>
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">fun</span></span> <span style="color: #009900">int</span> f<span style="color: #990000">(</span><span style="color: #009900">int</span> x<span style="color: #990000">,</span> <span style="color: #009900">int</span> y<span style="color: #990000">)</span> <span style="color: #990000">=</span>
+  <span style="color: #990000">(</span>x<span style="color: #990000">+</span><span style="color: #993399">2</span><span style="color: #990000">)</span> <span style="color: #990000">*</span> <span style="color: #990000">(</span>y<span style="color: #990000">-</span><span style="color: #993399">2</span><span style="color: #990000">)</span>
+
+<span style="font-weight: bold"><span style="color: #0000FF">fun</span></span> <span style="color: #009900">int</span> main<span style="color: #990000">()</span> <span style="color: #990000">=</span>
+  <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> a <span style="color: #990000">=</span> read<span style="color: #990000">(</span><span style="color: #009900">int</span><span style="color: #990000">)</span> <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>
+  <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> x <span style="color: #990000">=</span> a <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>
+  <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> y <span style="color: #990000">=</span> <span style="color: #993399">2</span> <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>
+  <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> b <span style="color: #990000">=</span> <span style="color: #993399">0</span>
+  <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>
+  b</tt></pre></div></div>
+<div class="listingblock">
+<div class="title">After dead variable removal</div>
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">fun</span></span> <span style="color: #009900">int</span> f<span style="color: #990000">(</span><span style="color: #009900">int</span> x<span style="color: #990000">,</span> <span style="color: #009900">int</span> y<span style="color: #990000">)</span> <span style="color: #990000">=</span>
+  <span style="color: #990000">(</span>x<span style="color: #990000">+</span><span style="color: #993399">2</span><span style="color: #990000">)</span> <span style="color: #990000">*</span> <span style="color: #990000">(</span>y<span style="color: #990000">-</span><span style="color: #993399">2</span><span style="color: #990000">)</span>
+
+<span style="font-weight: bold"><span style="color: #0000FF">fun</span></span> <span style="color: #009900">int</span> main<span style="color: #990000">()</span> <span style="color: #990000">=</span>
+  <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> a <span style="color: #990000">=</span> read<span style="color: #990000">(</span><span style="color: #009900">int</span><span style="color: #990000">)</span> <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>
+  <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> b <span style="color: #990000">=</span> <span style="color: #993399">0</span>
+  <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>
+  b</tt></pre></div></div>
+<div class="paragraph"><p>While dead binding removable is rarely useful on directly
+programmer-written code, many optimizations produce dead variables,
+and it is easier to remove them in a separate pass, than to build
+removal into the other optimizations.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_the_pipeline_as_a_whole">The pipeline as a whole</h4>
+<div class="paragraph"><p>The optimization passes mentioned above can be executed in any order
+and any number of times.  Indeed, for non-trivial programs, it is
+usually necessary to run copy-propagation/constant-folding and
+dead-binding-removal several times in order to reach a fixed point
+where no further optimization takes place.  In the Fasto compiler, the
+<code>-o</code> option runs through the pipeline just once, but you can
+experiment with the <code>-p</code> option to see the effects of the various
+stages for yourself.</p></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_register_allocator">Register Allocator</h3>
+<div class="paragraph"><p>The register allocator is implemented in <code>RegAlloc.sml</code>.  The project
+will not require changes to the register-allocator implementation.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_mips_code_generation">MIPS Code Generation</h3>
+<div class="paragraph"><p>Code Generation for the MIPS architecture is implemented in file
+<code>CodeGen.sml</code>.  The entry point is</p></div>
+<div class="paragraph"><p><code>compile : Fasto.KnownTypes.Prog -&gt; Mips.mips list</code></p></div>
+<div class="paragraph"><p>which takes as input the abstract-syntax representation of the input
+program and generates a list of MIPS instructions.</p></div>
+<div class="paragraph"><p>The type constructors for MIPS instructions are implemented in file
+<code>Mips.sml</code>, i.e. <code>datatype Mips</code>, together with the functionality to
+print them, i.e. <code>ppMips</code> and <code>ppMipsList</code>.</p></div>
+<div class="paragraph"><p>Function <code>compile</code> generates MIPS code for all functions declared in
+the program (via <code>compileFun</code>), and combines the resulting code with
+static code that initializes constants and executes the <code>main</code>
+function, also adding standard IO routines (<code>put/getint</code> and
+<code>put/getstring</code>) and code for exception handling
+(<code>_IllegalArrSizeError_</code>).</p></div>
+<div class="paragraph"><p>Code generation for an arbitrary Fasto expression is
+achieved via function</p></div>
+<div class="paragraph"><p><code>compileExp: Fasto.Exp -&gt; SymTab.SymTab string -&gt; Mips.mips list</code></p></div>
+<div class="paragraph"><p>Its first argument is the expression to generate code for, the second
+argument is the symbol table for variables, which associates a
+variable name with the name of the symbolic register that holds the
+variable&#8217;s value, and the third argument is the name of the symbolic
+register where the result of the expression is to be placed. The
+implementation of <code>compileExp</code> is done by case analysis on the type
+constructors of <code>Fasto.Exp</code>.  <em>The Fasto extensions to implement in
+the tasks will mainly require extensions to <code>compileExp</code></em>.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_mips_code_generation_array_layout">MIPS Code Generation: Array Layout</h3>
+<div class="paragraph"><p>We implement an array of integers of length <code>n</code> via the following
+representation: We allocate <code>n+1</code> words, in which the first word holds
+the length of the array, and the remaining <code>n</code> words hold the array&#8217;s
+elements, i.e., the content of the array.  (An integer is stored into
+a 4-byte word).</p></div>
+<div class="paragraph"><p>The array heap is implemented as reserved data space in the compiled
+program pointed at by a heap pointer. Allocation of memory simply
+means to increment the heap pointer by the corresponding amount, the
+previous value points to the allocated memory.</p></div>
+<div class="paragraph"><p>An array of booleans or characters is implemented similarly, the only
+difference is that each array element requires only one <code>byte</code> rather
+than one word (4 bytes). On the other hand, memory allocation in the
+heap needs to be <em>word-aligned</em>, to avoid runtime failures caused by
+load-word instructions.  It follows that for an array of booleans we
+allocate <code>1 + ((n+3)/4)</code> words: the first word stores the array&#8217;s
+length and the remaining <code>(n+3)/4</code> words are the content space
+(rounding up to a full word).  It follows that the content space is at
+least <code>n</code> bytes, each holding one array element.</p></div>
+<div class="paragraph"><p>Finally, a multi-dimensional array requires the same allocation as an
+array of integers, however the array elements are now (word-sized)
+pointers to other arrays.</p></div>
+<div class="paragraph"><p>The following picture depicts and demonstrates the array layout on
+three code examples.</p></div>
+<div class="imageblock">
+<div class="content">
+<img alt="Array layout"
+src="data:image/png;base64,
+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
+UERGLTEuNCAcRzp4AAAAAElFTkSuQmCC" />
+</div>
+</div>
+<div class="paragraph"><p>The leftmost example shows a bi-dimensional array of literals: the
+representation of <code>a</code> is a pointer to <code>4</code>-allocated words: the first
+word stores the length of the (outer dimension of the) array, i.e.,
+<code>3</code> and the other three words, denoting the array elements are
+pointers to the inner arrays: The first inner array has length <code>3</code> and
+elements <code>1,2,3</code>, the second has length <code>2</code> and elements <code>4, 5</code>, and
+the third one has length <code>1</code> and content <code>6</code>.</p></div>
+<div class="paragraph"><p>The example in the middle of the picture replicates array <code>a = iota(3)
+= {0, 1, 2}</code> four times. The result array <code>b</code> is thus an array of
+length <code>4</code>, i.e. the first word in its representation holds value <code>4</code>,
+and the content of the array consists of four identical pointers
+pointing to array <code>a</code>.</p></div>
+<div class="paragraph"><p>Finally the rightmost example uses <code>map</code> to create a bi-dimensional
+array, <code>b</code>, of three rows, in which the first, second and third rows
+have one, two and three elements, respectively.  The array structure
+is similar to the one of the array <code>a</code> in the leftmost example.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_fasto_compiler_driver">Fasto Compiler Driver</h3>
+<div class="paragraph"><p>The main driver of the (whole) compiler resides in file
+<code>src/FastoC.sml</code>, and the executable will be generated in <code>bin/fasto</code>
+(or <code>bin/fasto.exe</code> on Windows). To interpret an input program located
+in file <code>data/filename.foo</code>, run</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>$ ./bin/fasto -i data/filename</code></pre>
+</div></div>
+<div class="paragraph"><p>To compile-to/generate \mips code while applying the high-level optimizations,
+run</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>$ ./bin/fasto -o data/filename</code></pre>
+</div></div>
+<div class="paragraph"><p>To compile-to/generate \mips code without applying the high-level
+optimizations, run</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>$ ./bin/fasto -c data/filename</code></pre>
+</div></div>
+<div class="paragraph"><p>This will generate file <code>data/filename.asm</code> that you can run with the
+MARS simulator, i.e:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>$ java -jar Mars4_5.jar data/filename.asm</code></pre>
+</div></div>
+<div class="paragraph"><p>On both Linux, MacOS and Windows, the whole compiler, including the lexer and parser,
+can be built by entering the <code>src</code> directory and running</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>$ make</code></pre>
+</div></div>
+<div class="paragraph"><p>Once compiled, run</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>$ ./bin/fasto</code></pre>
+</div></div>
+<div class="paragraph"><p>with no arguments to get more help on which flags you can pass to the
+compiler.</p></div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2015-11-17 18:43:58 CET
+</div>
+</div>
+</body>
+</html>

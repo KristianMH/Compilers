@@ -1,0 +1,1094 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.9" />
+<title>Hints for Task 3</title>
+<style type="text/css">
+/* Shared CSS for AsciiDoc xhtml11 and html5 backends */
+
+/* Default font. */
+body {
+  font-family: Georgia,serif;
+}
+
+/* Title font. */
+h1, h2, h3, h4, h5, h6,
+div.title, caption.title,
+thead, p.table.header,
+#toctitle,
+#author, #revnumber, #revdate, #revremark,
+#footer {
+  font-family: Arial,Helvetica,sans-serif;
+}
+
+body {
+  margin: 1em 5% 1em 5%;
+}
+
+a {
+  color: blue;
+  text-decoration: underline;
+}
+a:visited {
+  color: fuchsia;
+}
+
+em {
+  font-style: italic;
+  color: navy;
+}
+
+strong {
+  font-weight: bold;
+  color: #083194;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #527bbd;
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
+  line-height: 1.3;
+}
+
+h1, h2, h3 {
+  border-bottom: 2px solid silver;
+}
+h2 {
+  padding-top: 0.5em;
+}
+h3 {
+  float: left;
+}
+h3 + * {
+  clear: left;
+}
+h5 {
+  font-size: 1.0em;
+}
+
+div.sectionbody {
+  margin-left: 0;
+}
+
+hr {
+  border: 1px solid silver;
+}
+
+p {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+ul, ol, li > p {
+  margin-top: 0;
+}
+ul > li     { color: #aaa; }
+ul > li > * { color: black; }
+
+.monospaced, code, pre {
+  font-family: "Courier New", Courier, monospace;
+  font-size: inherit;
+  color: navy;
+  padding: 0;
+  margin: 0;
+}
+pre {
+  white-space: pre-wrap;
+}
+
+#author {
+  color: #527bbd;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+#email {
+}
+#revnumber, #revdate, #revremark {
+}
+
+#footer {
+  font-size: small;
+  border-top: 2px solid silver;
+  padding-top: 0.5em;
+  margin-top: 4.0em;
+}
+#footer-text {
+  float: left;
+  padding-bottom: 0.5em;
+}
+#footer-badges {
+  float: right;
+  padding-bottom: 0.5em;
+}
+
+#preamble {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+div.imageblock, div.exampleblock, div.verseblock,
+div.quoteblock, div.literalblock, div.listingblock, div.sidebarblock,
+div.admonitionblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+div.admonitionblock {
+  margin-top: 2.0em;
+  margin-bottom: 2.0em;
+  margin-right: 10%;
+  color: #606060;
+}
+
+div.content { /* Block element content. */
+  padding: 0;
+}
+
+/* Block element titles. */
+div.title, caption.title {
+  color: #527bbd;
+  font-weight: bold;
+  text-align: left;
+  margin-top: 1.0em;
+  margin-bottom: 0.5em;
+}
+div.title + * {
+  margin-top: 0;
+}
+
+td div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content + div.title {
+  margin-top: 0.0em;
+}
+
+div.sidebarblock > div.content {
+  background: #ffffee;
+  border: 1px solid #dddddd;
+  border-left: 4px solid #f0f0f0;
+  padding: 0.5em;
+}
+
+div.listingblock > div.content {
+  border: 1px solid #dddddd;
+  border-left: 5px solid #f0f0f0;
+  background: #f8f8f8;
+  padding: 0.5em;
+}
+
+div.quoteblock, div.verseblock {
+  padding-left: 1.0em;
+  margin-left: 1.0em;
+  margin-right: 10%;
+  border-left: 5px solid #f0f0f0;
+  color: #888;
+}
+
+div.quoteblock > div.attribution {
+  padding-top: 0.5em;
+  text-align: right;
+}
+
+div.verseblock > pre.content {
+  font-family: inherit;
+  font-size: inherit;
+}
+div.verseblock > div.attribution {
+  padding-top: 0.75em;
+  text-align: left;
+}
+/* DEPRECATED: Pre version 8.2.7 verse style literal block. */
+div.verseblock + div.attribution {
+  text-align: left;
+}
+
+div.admonitionblock .icon {
+  vertical-align: top;
+  font-size: 1.1em;
+  font-weight: bold;
+  text-decoration: underline;
+  color: #527bbd;
+  padding-right: 0.5em;
+}
+div.admonitionblock td.content {
+  padding-left: 0.5em;
+  border-left: 3px solid #dddddd;
+}
+
+div.exampleblock > div.content {
+  border-left: 3px solid #dddddd;
+  padding-left: 0.5em;
+}
+
+div.imageblock div.content { padding-left: 0; }
+span.image img { border-style: none; vertical-align: text-bottom; }
+a.image:visited { color: white; }
+
+dl {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+dt {
+  margin-top: 0.5em;
+  margin-bottom: 0;
+  font-style: normal;
+  color: navy;
+}
+dd > *:first-child {
+  margin-top: 0.1em;
+}
+
+ul, ol {
+    list-style-position: outside;
+}
+ol.arabic {
+  list-style-type: decimal;
+}
+ol.loweralpha {
+  list-style-type: lower-alpha;
+}
+ol.upperalpha {
+  list-style-type: upper-alpha;
+}
+ol.lowerroman {
+  list-style-type: lower-roman;
+}
+ol.upperroman {
+  list-style-type: upper-roman;
+}
+
+div.compact ul, div.compact ol,
+div.compact p, div.compact p,
+div.compact div, div.compact div {
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+}
+
+tfoot {
+  font-weight: bold;
+}
+td > div.verse {
+  white-space: pre;
+}
+
+div.hdlist {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+div.hdlist tr {
+  padding-bottom: 15px;
+}
+dt.hdlist1.strong, td.hdlist1.strong {
+  font-weight: bold;
+}
+td.hdlist1 {
+  vertical-align: top;
+  font-style: normal;
+  padding-right: 0.8em;
+  color: navy;
+}
+td.hdlist2 {
+  vertical-align: top;
+}
+div.hdlist.compact tr {
+  margin: 0;
+  padding-bottom: 0;
+}
+
+.comment {
+  background: yellow;
+}
+
+.footnote, .footnoteref {
+  font-size: 0.8em;
+}
+
+span.footnote, span.footnoteref {
+  vertical-align: super;
+}
+
+#footnotes {
+  margin: 20px 0 20px 0;
+  padding: 7px 0 0 0;
+}
+
+#footnotes div.footnote {
+  margin: 0 0 5px 0;
+}
+
+#footnotes hr {
+  border: none;
+  border-top: 1px solid silver;
+  height: 1px;
+  text-align: left;
+  margin-left: 0;
+  width: 20%;
+  min-width: 100px;
+}
+
+div.colist td {
+  padding-right: 0.5em;
+  padding-bottom: 0.3em;
+  vertical-align: top;
+}
+div.colist td img {
+  margin-top: 0.3em;
+}
+
+@media print {
+  #footer-badges { display: none; }
+}
+
+#toc {
+  margin-bottom: 2.5em;
+}
+
+#toctitle {
+  color: #527bbd;
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-top: 1.0em;
+  margin-bottom: 0.1em;
+}
+
+div.toclevel0, div.toclevel1, div.toclevel2, div.toclevel3, div.toclevel4 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+div.toclevel2 {
+  margin-left: 2em;
+  font-size: 0.9em;
+}
+div.toclevel3 {
+  margin-left: 4em;
+  font-size: 0.9em;
+}
+div.toclevel4 {
+  margin-left: 6em;
+  font-size: 0.9em;
+}
+
+span.aqua { color: aqua; }
+span.black { color: black; }
+span.blue { color: blue; }
+span.fuchsia { color: fuchsia; }
+span.gray { color: gray; }
+span.green { color: green; }
+span.lime { color: lime; }
+span.maroon { color: maroon; }
+span.navy { color: navy; }
+span.olive { color: olive; }
+span.purple { color: purple; }
+span.red { color: red; }
+span.silver { color: silver; }
+span.teal { color: teal; }
+span.white { color: white; }
+span.yellow { color: yellow; }
+
+span.aqua-background { background: aqua; }
+span.black-background { background: black; }
+span.blue-background { background: blue; }
+span.fuchsia-background { background: fuchsia; }
+span.gray-background { background: gray; }
+span.green-background { background: green; }
+span.lime-background { background: lime; }
+span.maroon-background { background: maroon; }
+span.navy-background { background: navy; }
+span.olive-background { background: olive; }
+span.purple-background { background: purple; }
+span.red-background { background: red; }
+span.silver-background { background: silver; }
+span.teal-background { background: teal; }
+span.white-background { background: white; }
+span.yellow-background { background: yellow; }
+
+span.big { font-size: 2em; }
+span.small { font-size: 0.6em; }
+
+span.underline { text-decoration: underline; }
+span.overline { text-decoration: overline; }
+span.line-through { text-decoration: line-through; }
+
+div.unbreakable { page-break-inside: avoid; }
+
+
+/*
+ * xhtml11 specific
+ *
+ * */
+
+div.tableblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+div.tableblock > table {
+  border: 3px solid #527bbd;
+}
+thead, p.table.header {
+  font-weight: bold;
+  color: #527bbd;
+}
+p.table {
+  margin-top: 0;
+}
+/* Because the table frame attribute is overriden by CSS in most browsers. */
+div.tableblock > table[frame="void"] {
+  border-style: none;
+}
+div.tableblock > table[frame="hsides"] {
+  border-left-style: none;
+  border-right-style: none;
+}
+div.tableblock > table[frame="vsides"] {
+  border-top-style: none;
+  border-bottom-style: none;
+}
+
+
+/*
+ * html5 specific
+ *
+ * */
+
+table.tableblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+thead, p.tableblock.header {
+  font-weight: bold;
+  color: #527bbd;
+}
+p.tableblock {
+  margin-top: 0;
+}
+table.tableblock {
+  border-width: 3px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-color: #527bbd;
+  border-collapse: collapse;
+}
+th.tableblock, td.tableblock {
+  border-width: 1px;
+  padding: 4px;
+  border-style: solid;
+  border-color: #527bbd;
+}
+
+table.tableblock.frame-topbot {
+  border-left-style: hidden;
+  border-right-style: hidden;
+}
+table.tableblock.frame-sides {
+  border-top-style: hidden;
+  border-bottom-style: hidden;
+}
+table.tableblock.frame-none {
+  border-style: hidden;
+}
+
+th.tableblock.halign-left, td.tableblock.halign-left {
+  text-align: left;
+}
+th.tableblock.halign-center, td.tableblock.halign-center {
+  text-align: center;
+}
+th.tableblock.halign-right, td.tableblock.halign-right {
+  text-align: right;
+}
+
+th.tableblock.valign-top, td.tableblock.valign-top {
+  vertical-align: top;
+}
+th.tableblock.valign-middle, td.tableblock.valign-middle {
+  vertical-align: middle;
+}
+th.tableblock.valign-bottom, td.tableblock.valign-bottom {
+  vertical-align: bottom;
+}
+
+
+/*
+ * manpage specific
+ *
+ * */
+
+body.manpage h1 {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  border-top: 2px solid silver;
+  border-bottom: 2px solid silver;
+}
+body.manpage h2 {
+  border-style: none;
+}
+body.manpage div.sectionbody {
+  margin-left: 3em;
+}
+
+@media print {
+  body.manpage div#toc { display: none; }
+}
+
+
+</style>
+<script type="text/javascript">
+/*<![CDATA[*/
+var asciidoc = {  // Namespace.
+
+/////////////////////////////////////////////////////////////////////
+// Table Of Contents generator
+/////////////////////////////////////////////////////////////////////
+
+/* Author: Mihai Bazon, September 2002
+ * http://students.infoiasi.ro/~mishoo
+ *
+ * Table Of Content generator
+ * Version: 0.4
+ *
+ * Feel free to use this script under the terms of the GNU General Public
+ * License, as long as you do not remove or alter this notice.
+ */
+
+ /* modified by Troy D. Hanson, September 2006. License: GPL */
+ /* modified by Stuart Rackham, 2006, 2009. License: GPL */
+
+// toclevels = 1..4.
+toc: function (toclevels) {
+
+  function getText(el) {
+    var text = "";
+    for (var i = el.firstChild; i != null; i = i.nextSibling) {
+      if (i.nodeType == 3 /* Node.TEXT_NODE */) // IE doesn't speak constants.
+        text += i.data;
+      else if (i.firstChild != null)
+        text += getText(i);
+    }
+    return text;
+  }
+
+  function TocEntry(el, text, toclevel) {
+    this.element = el;
+    this.text = text;
+    this.toclevel = toclevel;
+  }
+
+  function tocEntries(el, toclevels) {
+    var result = new Array;
+    var re = new RegExp('[hH]([1-'+(toclevels+1)+'])');
+    // Function that scans the DOM tree for header elements (the DOM2
+    // nodeIterator API would be a better technique but not supported by all
+    // browsers).
+    var iterate = function (el) {
+      for (var i = el.firstChild; i != null; i = i.nextSibling) {
+        if (i.nodeType == 1 /* Node.ELEMENT_NODE */) {
+          var mo = re.exec(i.tagName);
+          if (mo && (i.getAttribute("class") || i.getAttribute("className")) != "float") {
+            result[result.length] = new TocEntry(i, getText(i), mo[1]-1);
+          }
+          iterate(i);
+        }
+      }
+    }
+    iterate(el);
+    return result;
+  }
+
+  var toc = document.getElementById("toc");
+  if (!toc) {
+    return;
+  }
+
+  // Delete existing TOC entries in case we're reloading the TOC.
+  var tocEntriesToRemove = [];
+  var i;
+  for (i = 0; i < toc.childNodes.length; i++) {
+    var entry = toc.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div'
+     && entry.getAttribute("class")
+     && entry.getAttribute("class").match(/^toclevel/))
+      tocEntriesToRemove.push(entry);
+  }
+  for (i = 0; i < tocEntriesToRemove.length; i++) {
+    toc.removeChild(tocEntriesToRemove[i]);
+  }
+
+  // Rebuild TOC entries.
+  var entries = tocEntries(document.getElementById("content"), toclevels);
+  for (var i = 0; i < entries.length; ++i) {
+    var entry = entries[i];
+    if (entry.element.id == "")
+      entry.element.id = "_toc_" + i;
+    var a = document.createElement("a");
+    a.href = "#" + entry.element.id;
+    a.appendChild(document.createTextNode(entry.text));
+    var div = document.createElement("div");
+    div.appendChild(a);
+    div.className = "toclevel" + entry.toclevel;
+    toc.appendChild(div);
+  }
+  if (entries.length == 0)
+    toc.parentNode.removeChild(toc);
+},
+
+
+/////////////////////////////////////////////////////////////////////
+// Footnotes generator
+/////////////////////////////////////////////////////////////////////
+
+/* Based on footnote generation code from:
+ * http://www.brandspankingnew.net/archive/2005/07/format_footnote.html
+ */
+
+footnotes: function () {
+  // Delete existing footnote entries in case we're reloading the footnodes.
+  var i;
+  var noteholder = document.getElementById("footnotes");
+  if (!noteholder) {
+    return;
+  }
+  var entriesToRemove = [];
+  for (i = 0; i < noteholder.childNodes.length; i++) {
+    var entry = noteholder.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div' && entry.getAttribute("class") == "footnote")
+      entriesToRemove.push(entry);
+  }
+  for (i = 0; i < entriesToRemove.length; i++) {
+    noteholder.removeChild(entriesToRemove[i]);
+  }
+
+  // Rebuild footnote entries.
+  var cont = document.getElementById("content");
+  var spans = cont.getElementsByTagName("span");
+  var refs = {};
+  var n = 0;
+  for (i=0; i<spans.length; i++) {
+    if (spans[i].className == "footnote") {
+      n++;
+      var note = spans[i].getAttribute("data-note");
+      if (!note) {
+        // Use [\s\S] in place of . so multi-line matches work.
+        // Because JavaScript has no s (dotall) regex flag.
+        note = spans[i].innerHTML.match(/\s*\[([\s\S]*)]\s*/)[1];
+        spans[i].innerHTML =
+          "[<a id='_footnoteref_" + n + "' href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+        spans[i].setAttribute("data-note", note);
+      }
+      noteholder.innerHTML +=
+        "<div class='footnote' id='_footnote_" + n + "'>" +
+        "<a href='#_footnoteref_" + n + "' title='Return to text'>" +
+        n + "</a>. " + note + "</div>";
+      var id =spans[i].getAttribute("id");
+      if (id != null) refs["#"+id] = n;
+    }
+  }
+  if (n == 0)
+    noteholder.parentNode.removeChild(noteholder);
+  else {
+    // Process footnoterefs.
+    for (i=0; i<spans.length; i++) {
+      if (spans[i].className == "footnoteref") {
+        var href = spans[i].getElementsByTagName("a")[0].getAttribute("href");
+        href = href.match(/#.*/)[0];  // Because IE return full URL.
+        n = refs[href];
+        spans[i].innerHTML =
+          "[<a href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+      }
+    }
+  }
+},
+
+install: function(toclevels) {
+  var timerId;
+
+  function reinstall() {
+    asciidoc.footnotes();
+    if (toclevels) {
+      asciidoc.toc(toclevels);
+    }
+  }
+
+  function reinstallAndRemoveTimer() {
+    clearInterval(timerId);
+    reinstall();
+  }
+
+  timerId = setInterval(reinstall, 500);
+  if (document.addEventListener)
+    document.addEventListener("DOMContentLoaded", reinstallAndRemoveTimer, false);
+  else
+    window.onload = reinstallAndRemoveTimer;
+}
+
+}
+asciidoc.install();
+/*]]>*/
+</script>
+</head>
+<body class="article">
+<div id="header">
+<h1>Hints for Task 3</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>This document contains hints and guidelines for solving Task 3 of the
+project task for the 2015 iteration of the course Introduction to
+Compilers at DIKU.</p></div>
+<div class="paragraph"><p>You are not required to follow these hints, but you are strongly
+encouraged to do so.</p></div>
+<div class="paragraph"><p>This task involves finishing the implementation of copy-propagation
+and constant-folding found in <code>CopyConstPropFold.sml</code>.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_constant_folding_and_copy_constant_propagation_background">Constant Folding and Copy/Constant Propagation Background</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Constant Folding is an optimization that evaluates expressions that yield constant values whenever possible at compile time rather than runtime.
+For example, expresssions involving only constants can always be folded:
+such is the case with expression <code>2+3</code> that can be directly evaluated
+by the compiler and replaced by its result, <code>5</code>.
+Furthermore, constant folding can also operate in cases in which the folded
+expression does not contain only constants by exploiting algebraic identities.
+For example, expression <code>e+0</code> can always be replace with the expression <code>e</code>,
+because <code>0</code> is the neutral element for addition.</p></div>
+<div class="paragraph"><p>In copy/constant propagation, the compiler reacts to bindings such
+as <code>let x = a</code> or <code>let y = 2</code>, which merely "copy" a variable or constant,
+and replace subsequent uses of <code>x</code> and <code>y</code> with <code>a</code> and <code>2</code> respectively.
+In constant folding, we simplify expressions whose value can be determined
+at compile-time.  In the running example, once we have performed the
+substitution <code>y |-&gt; 2</code> in the expression <code>y-2</code>, we obtain <code>2-2</code>, which,
+since it contains only constants, can be evaluated at compile-time to <code>0</code>
+(by constant folding).
+In the original expression <code>(x + 2) * (y - 2)</code> we thus produce
+<code>(x + 2) * 0</code>, which can again be constant-folded to <code>0</code>.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">fun</span></span> <span style="color: #009900">int</span> f<span style="color: #990000">(</span><span style="color: #009900">int</span> x<span style="color: #990000">,</span> <span style="color: #009900">int</span> y<span style="color: #990000">)</span> <span style="color: #990000">=</span>             <span style="font-weight: bold"><span style="color: #0000FF">fun</span></span> <span style="color: #009900">int</span> f<span style="color: #990000">(</span><span style="color: #009900">int</span> x<span style="color: #990000">,</span> <span style="color: #009900">int</span> y<span style="color: #990000">)</span> <span style="color: #990000">=</span>
+  <span style="color: #990000">(</span>x<span style="color: #990000">+</span><span style="color: #993399">2</span><span style="color: #990000">)</span> <span style="color: #990000">*</span> <span style="color: #990000">(</span>y<span style="color: #990000">-</span><span style="color: #993399">2</span><span style="color: #990000">)</span>                         <span style="color: #990000">(</span>x<span style="color: #990000">+</span><span style="color: #993399">2</span><span style="color: #990000">)</span> <span style="color: #990000">*</span> <span style="color: #990000">(</span>y<span style="color: #990000">-</span><span style="color: #993399">2</span><span style="color: #990000">)</span>
+
+<span style="font-weight: bold"><span style="color: #0000FF">fun</span></span> <span style="color: #009900">int</span> main<span style="color: #990000">()</span> <span style="color: #990000">=</span>                      <span style="font-weight: bold"><span style="color: #0000FF">fun</span></span> <span style="color: #009900">int</span> main<span style="color: #990000">()</span> <span style="color: #990000">=</span>
+  <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> a <span style="color: #990000">=</span> read<span style="color: #990000">(</span><span style="color: #009900">int</span><span style="color: #990000">)</span> <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>                  <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> a <span style="color: #990000">=</span> read<span style="color: #990000">(</span><span style="color: #009900">int</span><span style="color: #990000">)</span> <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>
+  <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> b <span style="color: #990000">=</span>                 <span style="color: #990000">----&gt;</span>         <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> b <span style="color: #990000">=</span>
+    <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> x <span style="color: #990000">=</span> a <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>                          <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> x <span style="color: #990000">=</span> a <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> y <span style="color: #990000">=</span> <span style="color: #993399">2</span> <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>                          <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> y <span style="color: #990000">=</span> <span style="color: #993399">2</span> <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>
+    <span style="color: #990000">(</span>x <span style="color: #990000">+</span> <span style="color: #993399">2</span><span style="color: #990000">)</span> <span style="color: #990000">*</span> <span style="color: #990000">(</span>y <span style="color: #990000">-</span> <span style="color: #993399">2</span><span style="color: #990000">)</span>                     <span style="color: #993399">0</span>
+  <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>                                    <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>
+  b                                     b</tt></pre></div></div>
+<div class="paragraph"><p>Furthermore, if carefully implemented, copy propagation can also
+normalize nested <code>let</code> bindings, such that it exposes more
+propagation oportunities:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">fun</span></span> <span style="color: #009900">int</span> f<span style="color: #990000">(</span><span style="color: #009900">int</span> x<span style="color: #990000">,</span> <span style="color: #009900">int</span> y<span style="color: #990000">)</span> <span style="color: #990000">=</span>             <span style="font-weight: bold"><span style="color: #0000FF">fun</span></span> <span style="color: #009900">int</span> f<span style="color: #990000">(</span><span style="color: #009900">int</span> x<span style="color: #990000">,</span> <span style="color: #009900">int</span> y<span style="color: #990000">)</span> <span style="color: #990000">=</span>
+  <span style="color: #990000">(</span>x<span style="color: #990000">+</span><span style="color: #993399">2</span><span style="color: #990000">)</span> <span style="color: #990000">*</span> <span style="color: #990000">(</span>y<span style="color: #990000">-</span><span style="color: #993399">2</span><span style="color: #990000">)</span>                         <span style="color: #990000">(</span>x<span style="color: #990000">+</span><span style="color: #993399">2</span><span style="color: #990000">)</span> <span style="color: #990000">*</span> <span style="color: #990000">(</span>y<span style="color: #990000">-</span><span style="color: #993399">2</span><span style="color: #990000">)</span>
+
+<span style="font-weight: bold"><span style="color: #0000FF">fun</span></span> <span style="color: #009900">int</span> main<span style="color: #990000">()</span> <span style="color: #990000">=</span>                      <span style="font-weight: bold"><span style="color: #0000FF">fun</span></span> <span style="color: #009900">int</span> main<span style="color: #990000">()</span> <span style="color: #990000">=</span>
+  <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> a <span style="color: #990000">=</span> read<span style="color: #990000">(</span><span style="color: #009900">int</span><span style="color: #990000">)</span> <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>                  <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> a <span style="color: #990000">=</span> read<span style="color: #990000">(</span><span style="color: #009900">int</span><span style="color: #990000">)</span> <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>
+  <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> x <span style="color: #990000">=</span> a <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>            <span style="color: #990000">----&gt;</span>         <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> x <span style="color: #990000">=</span> a <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>
+  <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> y <span style="color: #990000">=</span> <span style="color: #993399">2</span> <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>                          <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> y <span style="color: #990000">=</span> <span style="color: #993399">2</span> <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>
+  <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> b <span style="color: #990000">=</span> <span style="color: #993399">0</span> <span style="font-weight: bold"><span style="color: #0000FF">in</span></span>                          <span style="color: #993399">0</span>
+  b</tt></pre></div></div>
+<div class="paragraph"><p>Note that the program still contains the now-unused bindings for
+<code>a</code>, <code>x</code> and <code>y</code> - these will be removed by further dead-code elimination,
+yielding in the end the program</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>fun int main() =
+  let a = read(int) in
+  0</code></pre>
+</div></div>
+<div class="paragraph"><p>The binding of <code>a</code> cannot be removed because <code>read(int)</code> has side
+effects, but this is only of concern to the dead code removal pass and
+not part of copy propagation or constant folding.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_fundamental_implementation">Fundamental Implementation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The core of the implementation is the following function:</p></div>
+<div class="paragraph"><p><code>copyConstPropFoldExp : SymTab.SymTab Propagatee -&gt; Exp -&gt; Exp</code></p></div>
+<div class="paragraph"><p>This function takes as input a symbol table and an expression, and
+produces an optimised (possibly unchanged) expression.  The symbol
+table maps variable names to <em>Propagatee</em> values, which are defined as
+follows:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>datatype Propagatee = ConstProp of Value
+                    | VarProp of string</code></pre>
+</div></div>
+<div class="paragraph"><p>Not all variables in the program are present in the symbol table -
+only those who are <code>let</code>-bound to either a constant (<code>ConstProp</code>) or a
+variable (<code>VarProp</code>).  Here, then, is the basic mechanism of copy
+propagation: <strong>Whenever we encounter a usage of a variable with an
+entry in the symbol table, we replace the variable with its
+definition.</strong></p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_copy_constant_propagation">Copy/Constant Propagation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The <code>copyConstPropFoldExp</code> function uses case analysis on the
+expressions constructor, and copy/constant-propagation is fully
+implemented in the cases for <code>Var</code>, <code>Index</code>, and <code>Let</code> expressions.
+For the purpose of copy/constant-propagation, the other nodes just
+apply <code>copyConstPropFoldExp</code> recursively on the node&#8217;s subexpressions
+so that all program (sub)expressions are optimised.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">fun</span></span> copyConstPropFoldExp vtable e <span style="color: #990000">=</span>
+    <span style="font-weight: bold"><span style="color: #0000FF">case</span></span> e <span style="font-weight: bold"><span style="color: #0000FF">of</span></span>
+      <span style="font-style: italic"><span style="color: #9A1900">(* Copy/Constant propagation is handled entirely in the following</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">          three cases for variables, array indexing, and let-bindings. *)</span></span>
+        Var <span style="color: #990000">(</span>name<span style="color: #990000">,</span> pos<span style="color: #990000">)</span> <span style="color: #990000">=&gt;</span>
+           <span style="color: #990000">...</span> fill<span style="color: #990000">-</span><span style="font-weight: bold"><span style="color: #0000FF">in</span></span> the blanks <span style="color: #990000">(</span><span style="color: #993399">1</span><span style="color: #990000">)</span> <span style="color: #990000">...</span>
+
+      <span style="color: #990000">|</span> Index <span style="color: #990000">(</span>name<span style="color: #990000">,</span> e<span style="color: #990000">,</span> t<span style="color: #990000">,</span> pos<span style="color: #990000">)</span> <span style="color: #990000">=&gt;</span>
+           <span style="color: #990000">...</span> fill<span style="color: #990000">-</span><span style="font-weight: bold"><span style="color: #0000FF">in</span></span> the blanks <span style="color: #990000">(</span><span style="color: #993399">2</span><span style="color: #990000">)</span> <span style="color: #990000">...</span>
+
+      <span style="color: #990000">|</span> Let <span style="color: #990000">(</span>Dec <span style="color: #990000">(</span>name<span style="color: #990000">,</span> e<span style="color: #990000">,</span> decpos<span style="color: #990000">),</span> body<span style="color: #990000">,</span> pos<span style="color: #990000">)</span> <span style="color: #990000">=&gt;</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> <span style="font-weight: bold"><span style="color: #0000FF">val</span></span> e' <span style="color: #990000">=</span> copyConstPropFoldExp vtable e
+        <span style="font-weight: bold"><span style="color: #0000FF">in</span></span> <span style="font-weight: bold"><span style="color: #0000FF">case</span></span> e' <span style="font-weight: bold"><span style="color: #0000FF">of</span></span>
+               Var <span style="color: #990000">(</span>varname<span style="color: #990000">,</span> _<span style="color: #990000">)</span> <span style="color: #990000">=&gt;</span>
+                   <span style="color: #990000">...</span> fill<span style="color: #990000">-</span><span style="font-weight: bold"><span style="color: #0000FF">in</span></span> the blanks <span style="color: #990000">(</span><span style="color: #993399">3</span><span style="color: #990000">)</span> <span style="color: #990000">...</span>
+
+             <span style="color: #990000">|</span> Constant <span style="color: #990000">(</span>value<span style="color: #990000">,</span> _<span style="color: #990000">)</span> <span style="color: #990000">=&gt;</span>
+                   <span style="color: #990000">...</span> fill<span style="color: #990000">-</span><span style="font-weight: bold"><span style="color: #0000FF">in</span></span> the blanks <span style="color: #990000">(</span><span style="color: #993399">4</span><span style="color: #990000">)</span> <span style="color: #990000">...</span>
+
+             <span style="color: #990000">|</span> Let <span style="color: #990000">(</span>Dec bindee<span style="color: #990000">,</span> inner_body<span style="color: #990000">,</span> inner_pos<span style="color: #990000">)</span> <span style="color: #990000">=&gt;</span>
+                   <span style="color: #990000">...</span> fill<span style="color: #990000">-</span><span style="font-weight: bold"><span style="color: #0000FF">in</span></span> the blanks <span style="color: #990000">(</span><span style="color: #993399">5</span><span style="color: #990000">)</span>
+
+             <span style="color: #990000">|</span> _ <span style="color: #990000">=&gt;</span>
+               <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> <span style="font-weight: bold"><span style="color: #0000FF">val</span></span> body' <span style="color: #990000">=</span> copyConstPropFoldExp vtable body
+               <span style="font-weight: bold"><span style="color: #0000FF">in</span></span> Let <span style="color: #990000">(</span>Dec <span style="color: #990000">(</span>name<span style="color: #990000">,</span> e'<span style="color: #990000">,</span> decpos<span style="color: #990000">),</span> body'<span style="color: #990000">,</span> pos<span style="color: #990000">)</span>
+               <span style="font-weight: bold"><span style="color: #0000FF">end</span></span>
+        <span style="font-weight: bold"><span style="color: #0000FF">end</span></span></tt></pre></div></div>
+<div class="paragraph"><p>Your implementation consists of filling in the blanks <code>(1)</code>, <code>(2)</code>, <code>(3)</code>, <code>(4)</code>, and <code>(5)</code>.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>(1)</code> current expression is a variable, for example <code>Var("x", p)</code>.
+  We need to check whether this variable is a candidate for replacement,
+  i.e., wether we are in a case such as <code>let x = y in ... x ...</code> and if
+  so we need to replace the use of <code>x</code> with <code>y</code>. This checking requires
+  to perform a lookup in <code>vtable</code>:
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+If the lookup succeeds with <code>SOME (VarProp "y")</code>, i.e., copy
+   propagation case, then the expression result becomes the new
+   variable <code>y</code>, i.e., the result is <code>Var("y", p)</code>.
+</p>
+</li>
+<li>
+<p>
+If the lookup succeeds with <code>SOME (ConstProp v)</code>, i.e., constant
+   propagation case, then the
+   expression result should be constant expression v.
+</p>
+</li>
+<li>
+<p>
+Otherwise the expression result is the original expression,
+    i.e., <code>Var("x", p)</code>.
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+<code>(2)</code> current expression is an index, for example <code>Index("x",e,t,p)</code>.
+   Similarly as above we need to check whether we are in a replacement case,
+   such as for example <code>let x = y in ... x[i] ...</code>, and if so to return <code>y[i]</code>
+   instead of <code>x[i]</code>:
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+apply copy/constant propagation (and folding) to the index expression <code>e</code>,
+</p>
+</li>
+<li>
+<p>
+treat variable <code>x</code> similarly as above, i.e., find its copy/constant
+   replacement if any
+</p>
+</li>
+<li>
+<p>
+and form the result index expression from the
+    results of the previous two steps.
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+<strong>The case when the current expression is a <code>let</code> binding,
+  for example <code>let x = e in body</code> is the one that fills in/updates the <code>vtable</code></strong>.
+  We first apply copy/constant propagation and folding to <code>e</code>, and then
+  we pattern-match the resulted expression <code>e'</code>
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>(3)</code> if <code>e'</code> is a variable named <code>"y"</code> then we are in the copy propagation
+   case <code>let x = y in body</code>, and hence we need to add a new <code>x |-&gt; VarProp "y"</code>
+   binding to the <code>vtable</code>, and to recursively optimize <code>body</code> under the
+   extended <code>vtable</code>.
+</p>
+</li>
+<li>
+<p>
+<code>(4)</code> if <code>e'</code> is a value <code>v</code>, then we are in a constant propagation case,
+</p>
+<div class="olist lowerroman"><ol class="lowerroman">
+<li>
+<p>
+similar to <code>(3)</code> but add a <code>ConstProp</code> binding.
+</p>
+</li>
+</ol></div>
+</li>
+<li>
+<p>
+<code>(5)</code> correspond to tricky cases such
+    <code>let x = (let y = 4 in 5+y) in body</code>. In this case <code>e</code> is <code>let y = 4 in 5+y</code>,
+    and <code>e'</code> (the optimized <code>e</code>) is <code>let y = 4 in 9</code>.
+    Note that while <code>x</code> is <code>let</code>-binded to constant value <code>9</code> this is obscured
+    by the nested binding of <code>y</code>, i.e., we have <code>let x = (let y = 4 in 9) in body</code>.
+    What we can do in this case is to:
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+First, normalize the nested <code>let</code> binding, i.e., transform
+    <code>let x = (let y = 4 in 9) in body</code> into the semantically equivalent
+    expression <code>let y = 4 in let x = 9 in body</code>, and
+</p>
+</li>
+<li>
+<p>
+Second, recursively optimize (by <code>copyConstPropFoldExp</code>) the expression
+    obtained in the previous step.
+</p>
+</li>
+</ul></div>
+</li>
+</ul></div>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_constant_folding">Constant Folding</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>For the implementation of constant folding, you will have to implement
+the language constructs that you have introduced in Task 1:
+multiplication, division, logical and/or, logical and integer
+negation.  Constant folding performs algebraic simplification of
+scalar expressions.  For demonstration we look at the provided code
+for addition:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">fun</span></span> copyConstPropFoldExp vtable e <span style="color: #990000">=</span>
+    <span style="font-weight: bold"><span style="color: #0000FF">case</span></span> e <span style="font-weight: bold"><span style="color: #0000FF">of</span></span> <span style="color: #990000">...</span>
+      <span style="color: #990000">|</span> Plus <span style="color: #990000">(</span>e1<span style="color: #990000">,</span> e2<span style="color: #990000">,</span> pos<span style="color: #990000">)</span> <span style="color: #990000">=&gt;</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">let</span></span> <span style="font-weight: bold"><span style="color: #0000FF">val</span></span> e1' <span style="color: #990000">=</span> copyConstPropFoldExp vtable e1
+            <span style="font-weight: bold"><span style="color: #0000FF">val</span></span> e2' <span style="color: #990000">=</span> copyConstPropFoldExp vtable e2
+        <span style="font-weight: bold"><span style="color: #0000FF">in</span></span> <span style="font-weight: bold"><span style="color: #0000FF">case</span></span> <span style="color: #990000">(</span>e1'<span style="color: #990000">,</span> e2'<span style="color: #990000">)</span> <span style="font-weight: bold"><span style="color: #0000FF">of</span></span>
+               <span style="color: #990000">(</span>Constant <span style="color: #990000">(</span>IntVal x<span style="color: #990000">,</span> _<span style="color: #990000">),</span> Constant <span style="color: #990000">(</span>IntVal y<span style="color: #990000">,</span> _<span style="color: #990000">))</span> <span style="color: #990000">=&gt;</span> Constant <span style="color: #990000">(</span>IntVal <span style="color: #990000">(</span>x<span style="color: #990000">+</span>y<span style="color: #990000">),</span> pos<span style="color: #990000">)</span>
+             <span style="color: #990000">|</span> <span style="color: #990000">(</span>Constant <span style="color: #990000">(</span>IntVal <span style="color: #993399">0</span><span style="color: #990000">,</span> _<span style="color: #990000">),</span> _<span style="color: #990000">)</span>                      <span style="color: #990000">=&gt;</span> e2'
+             <span style="color: #990000">|</span> <span style="color: #990000">(</span>_<span style="color: #990000">,</span> Constant <span style="color: #990000">(</span>IntVal <span style="color: #993399">0</span><span style="color: #990000">,</span> _<span style="color: #990000">))</span>                      <span style="color: #990000">=&gt;</span> e1'
+             <span style="color: #990000">|</span> _                                                <span style="color: #990000">=&gt;</span> Plus <span style="color: #990000">(</span>e1'<span style="color: #990000">,</span> e2'<span style="color: #990000">,</span> pos<span style="color: #990000">)</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">end</span></span></tt></pre></div></div>
+<div class="paragraph"><p>The code above calls recursively <code>copyConstPropFoldExp</code> on
+subexpressions <code>e1</code> and <code>e2</code> to perform propagation and constant
+folding recursively, resulting in optimised subexpressions <code>e1'</code> and
+<code>e2'</code>. Then, we see whether we can simplify the <code>Plus</code> expression
+itself:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+if both <code>e1'</code> and <code>e2'</code> are constant values than we just create a
+  new value (expression) which is the sum of the two,
+</p>
+</li>
+<li>
+<p>
+otherwise if <code>e1'</code> (<code>e2'</code>) is constant <code>0</code> then the result is <code>e2'</code>
+  (<code>e1'</code>), because <code>0+e2' == e2'</code>.  If <code>e2'</code> happens to be a variable
+  than further copy propagation might be enabled.
+</p>
+</li>
+<li>
+<p>
+otherwise a new (optimised) expression is created <code>Plus (e1', e2', pos)</code>.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>In a similar way your task is to implement <code>*, /, &amp;&amp;, ||, ==, not</code>.
+For example, for a multiplication expression: <code>e1' * e2'</code>, where
+<code>e1'</code> and <code>e2'</code> are the recursively optimised subexpression, further
+simplifications can be done in several cases:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+if <code>e1'</code> and <code>e2'</code> are constant values then the result will
+                be the multiplication value,
+</p>
+</li>
+<li>
+<p>
+if <code>e1'</code> (<code>e2'</code>) is value <code>1</code>
+            then the result is <code>e2'</code> (<code>e1'</code>) because <code>1 * e2' = e2'</code>,
+</p>
+</li>
+<li>
+<p>
+if if <code>e1'</code> (<code>e2'</code>) is value <code>0</code>, then you <em>cannot</em> simplify to the
+  constant value <code>0</code>, because the other operand may have side effects.
+</p>
+</li>
+<li>
+<p>
+otherwise the optimised result is <code>Times (e1', e2', pos)</code>.
+</p>
+</li>
+<li>
+<p>
+A similar rationale can be applied to <code>/, &amp;&amp;, ||, =, not</code>.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2015-11-17 17:34:51 CET
+</div>
+</div>
+</body>
+</html>
