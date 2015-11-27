@@ -163,7 +163,8 @@ fun compileExp e vtable place =
         , Mips.ORI (place, place, makeConst (n mod 65536)) ]
   | Constant (CharVal c, pos) => [ Mips.LI (place, makeConst (ord c)) ]
 
-  | Constant (BoolVal b, pos) => raise Fail "Unimplemented feature boolean constants"
+  | Constant (BoolVal b, pos) => if b then [Mips.LI (place, makeConst 1) ]
+                                 else [Mips.LI (place, makeConst 0) ]
   
   (* Create/return a label here, collect all string literals of the program
      (in stringTable), and create them in the data section before the heap
@@ -232,9 +233,20 @@ fun compileExp e vtable place =
       end
 
   | Times (e1, e2, pos) =>
-    raise Fail "Unimplemented feature multiplication"
+    let val t1 = newName "Times_L"
+        val t2 = newName "Times_R"
+        val code1 = compileExp e1 vtable t1
+        val code2 = compileExp e2 vtable t2
+    in  code1 @ code2 @ [Mips.MUL (place,t1,t2)]
+    end
   | Divide (e1, e2, pos) =>
-    raise Fail "Unimplemented feature division"
+    let val t1 = newName "Divide_L"
+        val t2 = newName "Divide_R"
+        val code1 = compileExp e1 vtable t1
+        val code2 = compileExp e2 vtable t2
+    in  code1 @ code2 @ [Mips.DIV (place,t1,t2)]
+    end
+  | AND (e1, e2, pos) => 
   | Not (e', pos) =>
     raise Fail "Unimplemented feature not"
   | Negate (e', pos) =>

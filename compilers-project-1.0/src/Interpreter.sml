@@ -154,16 +154,33 @@ fun evalExp ( Constant (v,_), vtab, ftab ) = v
         end
 
   | evalExp ( Times(e1, e2, pos), vtab, ftab ) =
-    raise Fail "Unimplemented feature multiplication"    
-
+    let val res1 = evalExp(e1, vtab, ftab)
+        val res2 = evalExp(e2, vtab, ftab)
+    in case (res1, res2) of
+           (IntVal n1, IntVal n2) => IntVal (n1*n2)
+         | _ => InvalidOperands "Times on non-integral args:" [(Int, Int)] res1 res2 pos 
+    end
   | evalExp ( Divide(e1, e2, pos), vtab, ftab ) =
-    raise Fail "Unimplemented feature division"    
+    let val res1 = evalExp(e1, vtab, ftab)
+        val res2 = evalExp(e2, vtab, ftab)
+    in case (res1, res2) of
+           (IntVal n1, IntVal n2) => IntVal (n1 / n2)
+         | _ => InvalidOperands "Divide on non-integral args:" [(Int, Int)] res1 res2 pos  
 
   | evalExp (And (e1, e2, pos), vtab, ftab) =
-    raise Fail "Unimplemented feature &&"    
-
+    let val res1 = evalExp(e1, vtab, ftab) in
+      case res1 of
+          BoolVal true  => evalExp(e2, vtab, ftab)
+        | BoolVal false => BoolVal(false)
+        | _ => InvalidOperands "And on non-boolean args:" [(Bool, Bool)] res1 res2 pos
+    end
   | evalExp (Or (e1, e2, pos), vtab, ftab) =
-    raise Fail "Unimplemented feature ||"
+    let val res1 = evalExp(e1, vtab, ftab) in
+      case res1 of
+          BoolVal true  => BoolVal(true)
+        | BoolVal false => evalExp(e2, vtab, ftab)
+        | _ => InvalidOperands "Or on non-boolean args:" [(Bool, Bool)] res1 res2 pos
+    end
 
   | evalExp ( Not(e, pos), vtab, ftab ) =
     raise Fail "Unimplemented feature not"

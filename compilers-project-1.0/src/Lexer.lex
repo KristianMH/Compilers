@@ -72,6 +72,8 @@ rule Token = parse
 							  String.size s - 2)),
 			     getPos lexbuf) }
   | `+`                 { Parser.PLUS   (getPos lexbuf) }
+  | `*`                 { Parser.TIMES  (getPos lexbuf) }
+  | `/`                 { Parser.DIVIDE (getPos lexbuf) }
   | `-`                 { Parser.MINUS  (getPos lexbuf) }
   | "=="                { Parser.DEQ    (getPos lexbuf) }
   | `=`                 { Parser.EQ     (getPos lexbuf) }
@@ -82,6 +84,12 @@ rule Token = parse
   | `]`                 { Parser.RBRACKET (getPos lexbuf) }
   | `{`                 { Parser.LCURLY (getPos lexbuf) }
   | `}`                 { Parser.RCURLY (getPos lexbuf) }
-  | `,`                 { Parser.COMMA (getPos lexbuf) }
-  | eof                 { Parser.EOF (getPos lexbuf) }
+  | `,`                 { Parser.COMMA  (getPos lexbuf) }
+  | "true"              { Parser.BOOLEAN (getPos lexbuf) }
+  | "false"             { Parser.BOLEAN (getPos lexbuf) }
+  | "and"               { Parser.AND    (getPos lexbuf) }
+  | "or"                { Parser.OR     (getPos lexbuf) }
+  | "Not"               { Parser.NOT    (getPos lexbuf) }
+  | `~`                 { Parser.NEGATE (getPos lexbuf) }
+  | eof                 { Parser.EOF    (getPos lexbuf) }
   | _                   { lexerError lexbuf "Illegal symbol in input" };
