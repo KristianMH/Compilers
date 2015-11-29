@@ -1,0 +1,168 @@
+\documentclass[12pt]{article}
+\usepackage[a4paper, hmargin={2.8cm, 2.8cm}, vmargin={2.5cm, 2.5cm}]{geometry}
+\usepackage{eso-pic} % \AddToShipoutPicture
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[english]{babel}
+\usepackage{cite}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{mathrsfs}
+\usepackage{enumerate}
+\usepackage{fullpage}
+\usepackage[linkcolor=red]{hyperref}
+\usepackage[final]{graphicx}
+\usepackage{color}
+\usepackage{minted}
+\usepackage{listings}
+\usepackage{url}
+\renewcommand*\lstlistingname{Code Block}
+\usemintedstyle{tango}
+\definecolor{bg}{rgb}{0.95,0.95,0.95}
+
+%caption distinct from normal text
+\usepackage[hang,small,bf]{caption}
+\usepackage{hyperref}
+
+\hypersetup{
+    colorlinks,%
+    citecolor=black,%
+    filecolor=black,%
+    linkcolor=black,%
+    urlcolor=black
+}
+
+\numberwithin{listing}{section}
+
+\author{
+  \texttt{André Lauridsen} \\[.4cm]
+  \texttt{Kristian Høi}\\[.4cm]
+  Instruktor: Jens Emil\\[.4cm]
+  \vspace{10cm}
+}
+
+\title{
+  \vspace{3cm}
+  \Huge{AD-assignment 1} \\[.25cm]
+  \large{Sorting and recurrence analysis} 
+  \vspace{.75cm}
+}
+
+\begin{document}
+
+\AddToShipoutPicture*{\put(0,0){\includegraphics*[viewport=0 0 700 600]{includes/ku-farve}}}
+\AddToShipoutPicture*{\put(0,602){\includegraphics*[viewport=0 600 700 1600]{includes/ku-farve}}}
+
+%% Change `ku-en` to `nat-en` to use the `Faculty of Science` header
+\AddToShipoutPicture*{\put(0,0){\includegraphics*{includes/ku-en}}}
+
+\clearpage\maketitle
+\thispagestyle{empty}
+
+\newpage
+
+\pagestyle{plain}
+\setcounter{page}{1}
+\pagenumbering{arabic}
+
+\section*{Recurrence analysis}
+\subsection*{Task 1}
+\begin{equation}
+p(n) \ = \ 8p(n/2)+n^2
+\end{equation}
+\begin{equation}
+  p(n) \ = \ 8p(n/4)+n^3
+\end{equation}
+\begin{equation}
+  p(n) \ = \ 10p(n/9)+nlog_{2}n
+\end{equation}
+ved brug af Master Theroem\cite[p.94]{CLRS} på (1), ser vi at den falder i case 1, da $n^2=O(n^{3-\epsilon})$ for $\epsilon$ = 1, derfor må:
+\[ T(N)\ = \ \Theta(n^3) \]
+På (2) gælder case 3, da vi har at $n^{3}=\Omega(n^{1.5+\epsilon})$ for $\epsilon=1$ og der gælder at $8(\frac{n}{4})^3 \leq c(n^3)$, for c=$\frac{1}{4}$, derfor gælder der:
+\[ T(n) \ = \ \Theta(f(n)), f(n) = n^3 \]
+på (3) gælder case 1, da vi kan udelukke de to andre cases, da vi har $f(n) \neq \Theta(n^1.04)$ for case 2 og ved case 3 gælder der at $f(n) = \Omega(n^{1.04})$ men der gælder ikke at $10\cdot \frac{n\cdot log(n)}{9}\leq \ c\cdot (n\cdot log(n))$ for c < 1, derfor konkludere vi: \[ T(n) = \Theta n^{1.04} \]
+
+\subsection*{Task 2}
+\begin{equation}
+  p(n) \ = \ p(n/2)+p(n/3)+n
+\end{equation}
+\begin{equation}
+  p(n) \ = \ \sqrt{n}\cdot(\sqrt{n})+\sqrt{n}
+\end{equation}
+løsning på rekursionsligning (4):\\
+ud fra bilag 1, hvor rekursionstræet kan ses, kan man aflæse at løsningen til dette er:
+$cn(1 + (\frac{5}{6}) + (\frac{5}{6})^2 + (\frac{5}{6})^3 + ...)$\\
+ud fra ovenstående løsning, gætter vi på at løsningen er O(n).\\
+Derfor benytter vi substitutions metoden, hvor vi substituerer ind i rekursionsligningen, hvilket giver os:\\
+$p(n) \leq \frac{cn}{2} + \frac{cn}{3} + n$\\
+\indent $\ \ = \frac{5}{6}cn + n$\\
+\indent $\ \ \leq cn$, for $c \geq 6$
+\\\\
+løsning for rekursionsligning (5):\\
+Når kvadratrod af n tages, halveres eksponenten, tag = $n=2^k$.\\
+eftersom at eksponenten halveres kan der anvendes O(log k) kvadratrødder før $k \leq 1$, hvilket vil resultere i $n \leq 2$.\\
+Siden at $n=2^k$ er $k=log_2 (n)$.\\
+Dvs. antallet af kvadratrødder der tages er O($log (k)$) = O($log(log(n))$). (højden = n).\\
+derfor er vores gæt på en løsning: O($n\cdot log(log(n))$).\\
+Nu kan vi så benytte substitutionsmetoden for at vise vi har den korrekte løsning.\\
+Vi benytter omskrvningen \cite[p. 86]{CLRS}\\
+Vi antager $m \geq 3$, da det ikke gælder for m = 1,2.\\
+$p(n)\ \ = \ \sqrt{n} \cdot p(\sqrt{n}) + \sqrt{n}$  her sættes $m = n$\\
+$p(2^m)\ \leq \ 2^\frac{m}{2} \cdot (c2^\frac{m}{2} \cdot log(log(2^\frac{m}{2}))) + 2^\frac{m}{2}$  her sættes $S(m) = T(2^m)$\\
+$S(m)\ \leq \ \frac{m}{2} \cdot (c \frac{m}{2} \cdot log(log(\frac{m}{2}))) + \frac{m}{2}$\\
+\indent \indent$=\  \frac{cm}{2} log(log(\frac{m}{2})) + \frac{m}{2}$\\
+\indent \indent$\leq \ c\ m log(log(m))$\\
+derfor kan vi konkludere at T(n) = O(n log(log(n))).
+Vi kunne ikke finde nogle lower-bounds, da vi er lidt i tvivl hvordan vi gør det med substition metoden, der kunne det være fedt, hvis vi kunne få et par hints til genafleveringen.
+\
+\section*{Sorting}
+\subsection*{Task 3}
+\begin{verbatim}
+  sort(a){
+  maxdepth = 2log(A.length)
+  p = Randomized-Partition(A,1,A.length)
+  introSort(A, 1, p, maxdepth-1)
+  introSort(A, p+1, A.length, maxdepth-1)
+  }
+  
+  introSort(A, i, j, maxdepth){
+  if (j-i < 32){
+    return insertionSort(A)
+  }
+  if (maxdepth == 0){
+    return heapSort(A)
+  }
+  p = Randomized-Partition(A,1,A.length)
+  introSort(A, 1, p, maxdepth-1)
+  introSort(A, p+1, n, maxdepth-1)
+  }
+\end{verbatim}
+Algoritmen fungerer således, at der på det initielle kald sort(A) bliver arrayet A bliver tilfældigt delt op i to subarray index fra A[1..p] og A[p+1..n] på disse to sub-arrays bliver der kaldt introSort rekursivt på. introSort terminere enten ved at der bliver kaldt insertionsort på et lille array n < 32 eller den kalder sig rekursivt flere en den maxdybde som vi har tilladt, returneres der heapsort(a). 
+\subsection*{Task 4}
+Får at worst-case på instrosort skal være O($ n^2 $) skal introsort n gange kalde sig selv med to subarray med n-1 og 0 længde, men dette kan ikke ske da vi har sat en maxdybde på som er mindre en n(A.length). Der vil vi så kalde heapsort, som vi ved har en worst-case køretid på O(nlog(n)). Derfor kan worst-case for introsort også O(nlog(n)). 
+\subsection*{Task 5}
+Grunden til at vi hellere bruger Heapsort istedet Mergesort, er at mergesort bruger mere plads end heapsort. heapsort bruger O(1) plads hvorimod mergesort bruger O(n) ekstra plads\cite{mergeWiki}. Derfor vil vi hellere bruge heapsort end mergesort, da quicksort også bruger sortere inplace\cite{quicksortWiki} og derfor bruger mindre plads en mergesort.
+\subsection*{Task 6}
+Grunden til at det er bedre at bruge insertionsort på næsten sorteret små datamængder, er at i praksis vil insertionsort være hurtigere en heapsort/mergesort/quicksort. I følge Problem 2.1 i CLRS kan insertionsort sortere små lister med længde k på $\theta$(nk) hvilket er linær tid\cite[p.40]{CLRS}.
+\newpage
+\section{Outline af Kristian}
+\begin{enumerate}
+  \item Introduktion af mergesort med en given liste f.eks A = [7,5,1,7,9,4,6,3,2,5,7] med illistration.
+  \item O-notation
+  \item Worst-case for Mergesort O(nlog(n))
+  \item Rekurssiontræ for mergesort
+  \item substitions metoden for at vise worst-case 
+  \item afsluttende om andre "comparisions-algoritmer" \ heapsort, insertionsort, quicksort og sammenligning af køretid.
+\end{enumerate}
+
+Køretiden i worst case for introsort vil være $T(n)\ = \ P(n) + \sum\limits_{i=1}^k H_i +\sum\limits_{j=1}^m I_j$. I dette tilfælde vil P(n) være den dybde vi tillader($2lg(n)$), og vi ved, at partition kører O(n). Derfor vil den samlede køretid for P(n) =$n\cdot 2log(n)$. $H_i$ er de sub arrays vi kalder heapsort på, hver af disse har længden $d_i$. Derfor er summen defnineret ved : $\sum\limits_{i=1}^k d_i\cdot lg(d_i)$. Nu vælger vi c > 0, derfor har vi at:\\
+$\sum\limits_{i=1}^k d_i\cdot lg(d_i) \geq \sum\limits_{i=1}^k cd_i\cdot lg(d_i)$. Dette kan omskrives, da der gælder at $d_1$+....$d_k \geq n$. og vi vælger at c = max($c_1$...$c_k$)\\
+$\sum\limits_{i=1}^k cd_i\cdot lg(d_i) \geq cn\cdot lg(n)$. \\
+$I_j$ er givet ved kørseltiden af insertionsort på subarrays der har en længde mindre en k, hvor vi i vores implementation har valgt k = 32. Den samlede køretid for insertionsort på m subarrys må være givet ved O(mk)\cite[p.40]{CLRS}, som kan omskrives: O(mk) = O(m), vi ved at m < n, derfor kan vi sige at O(m) = O(n).\\
+Den samlede køretid på derfor være begrænset af: $T(n) \ = \ O(n\cdot 2lg(n) + n\cdot lg(n) + n)$ = $O(n\cdot lg(n)$, da konstaterne kan fjernes og O(n) ikke er dominerende
+\bibliography{references}{}
+\bibliographystyle{plain}
+\end{document}
