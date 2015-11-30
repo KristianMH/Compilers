@@ -183,10 +183,17 @@ fun evalExp ( Constant (v,_), vtab, ftab ) = v
     end
 
   | evalExp ( Not(e, pos), vtab, ftab ) =
-    raise Fail "Unimplemented feature not"
+    let val res1 = evalExp(e, vtab, ftab) in
+      case res1 of
+          BoolVal true  => BoolVal(false)
+        | BoolVal false => BoolVal(true) 
+        | _ => InvalidOperands "Not on non-boolean arg:"[(Bool)] res1 pos 
 
   | evalExp ( Negate(e, pos), vtab, ftab ) =
-    raise Fail "Unimplemented feature negate"
+    let val res1 = evalExp(e, vtab, ftab) in
+      case res1 of
+          Intval n  => Intval(~n)
+        | _ => InvalidOperands "Negate on non-integer arg:"[(Int)] res1 pos 
 
   | evalExp ( Equal(e1, e2, pos), vtab, ftab ) =
         let val r1 = evalExp(e1, vtab, ftab)

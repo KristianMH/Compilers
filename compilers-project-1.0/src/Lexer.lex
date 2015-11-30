@@ -89,7 +89,7 @@ rule Token = parse
   | "false"             { Parser.BOLEAN (getPos lexbuf) }
   | "and"               { Parser.AND    (getPos lexbuf) }
   | "or"                { Parser.OR     (getPos lexbuf) }
-  | "Not"               { Parser.NOT    (getPos lexbuf) }
+  | "not"               { Parser.NOT    (getPos lexbuf) }
   | `~`                 { Parser.NEGATE (getPos lexbuf) }
   | eof                 { Parser.EOF    (getPos lexbuf) }
   | _                   { lexerError lexbuf "Illegal symbol in input" };

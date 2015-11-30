@@ -113,17 +113,21 @@ and checkExp ftab vtab (exp : In.Exp)
 
     | In.And (e1, e2, pos)
       => let val (_, e1_dec, e2_dec) = checkBinOp ftab vtab (pos, Bool, e1, e2)
-         in (Bool, Out.Divide (e1_dec, e2_dec, pos)) end
+         in (Bool, Out.And (e1_dec, e2_dec, pos)) end
 
     | In.Or (e1, e2, pos)
       => let val (_, e1_dec, e2_dec) = checkBinOp ftab vtab (pos, Bool, e1, e2)
-         in (Bool, Out.Divide (e1_dec, e2_dec, pos)) end
+         in (Bool, Out.Or (e1_dec, e2_dec, pos)) end
 
     | In.Not (e, pos)
-      => raise Fail "Unimplemented feature not"
+      => (case checkExp ftab vtab e of
+           | (Bool, e') => (Bool, Out.Not(e', pos))
+           | _ => raise Error ("Not operator only supports boolean values", pos) )
 
     | In.Negate (e, pos)
-      => raise Fail "Unimplemented feature negate"
+      => (case checkExp ftab vtab e of
+           | (Int, e') => (Int, Out.Negate(e', pos))
+           | _ => raise Error ("Negate operator only supports integers values", pos) )
 
     (* The types for e1, e2 must be the same. The result is always a Bool. *)
     | In.Equal (e1, e2, pos)

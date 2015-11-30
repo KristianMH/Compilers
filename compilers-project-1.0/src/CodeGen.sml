@@ -246,7 +246,15 @@ fun compileExp e vtable place =
         val code2 = compileExp e2 vtable t2
     in  code1 @ code2 @ [Mips.DIV (place,t1,t2)]
     end
-  | AND (e1, e2, pos) => 
+  | And (e1, e2, pos) =>
+    let val nextlabel = newName "next"
+        val labeltrue = newName "true"
+        val labelfalse = newName "false"
+        val code1 = compileExp e1 vtable place
+        val code2 =
+    
+  | Or (e1, e2, pos) =>
+    
   | Not (e', pos) =>
     raise Fail "Unimplemented feature not"
   | Negate (e', pos) =>
