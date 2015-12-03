@@ -36,7 +36,9 @@
        | "int"          => Parser.INT pos
        | "bool"         => Parser.BOOL pos
        | "char"         => Parser.CHAR pos
-       | "fun"          => Parser.FUN pos
+       | "fun"          => Parser.FUN pos            
+       | "true"         => Parser.TRUE pos
+       | "false"        => Parser.FALSE pos
 
 (* specials: *)
        | "read"         => Parser.READ pos
@@ -85,11 +87,9 @@ rule Token = parse
   | `{`                 { Parser.LCURLY (getPos lexbuf) }
   | `}`                 { Parser.RCURLY (getPos lexbuf) }
   | `,`                 { Parser.COMMA  (getPos lexbuf) }
-  | "true"              { Parser.BOOLEAN (getPos lexbuf) }
-  | "false"             { Parser.BOLEAN (getPos lexbuf) }
-  | "and"               { Parser.AND    (getPos lexbuf) }
-  | "or"                { Parser.OR     (getPos lexbuf) }
-  | "not"               { Parser.NOT    (getPos lexbuf) }
+  | "&&"                { Parser.AND    (getPos lexbuf) }
+  | "||"                { Parser.OR     (getPos lexbuf) }
+  | "!"                 { Parser.NOT    (getPos lexbuf) }
   | `~`                 { Parser.NEGATE (getPos lexbuf) }
   | eof                 { Parser.EOF    (getPos lexbuf) }
   | _                   { lexerError lexbuf "Illegal symbol in input" };

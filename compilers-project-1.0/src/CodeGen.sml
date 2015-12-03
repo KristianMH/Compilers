@@ -164,7 +164,7 @@ fun compileExp e vtable place =
   | Constant (CharVal c, pos) => [ Mips.LI (place, makeConst (ord c)) ]
 
   | Constant (BoolVal b, pos) => if b then [Mips.LI (place, makeConst 1) ]
-                                 else [Mips.LI (place, makeConst 0) ]
+                                 else [Mips.MOVE (place, "0") ]
   
   (* Create/return a label here, collect all string literals of the program
      (in stringTable), and create them in the data section before the heap
@@ -247,18 +247,40 @@ fun compileExp e vtable place =
     in  code1 @ code2 @ [Mips.DIV (place,t1,t2)]
     end
   | And (e1, e2, pos) =>
-    let val nextlabel = newName "next"
+    let val labelnext = newName "next"
         val labeltrue = newName "true"
         val labelfalse = newName "false"
-        val code1 = compileExp e1 vtable place
-        val code2 =
+        val andright = newName "andright"
+        val andleft = newName "andleft"
+        val code1 = compileExp e1 vtable andright
+        val code2 = compileExp e2 vtable andleft
+    in [Mips.MOVE (place, "0")] @ code1 @ [Mips.BNE (andright, "0", labelnext)]
+       @ [Mips.J labelfalse] @ [Mips.LABEL labelnext] @ code2
+       @ [Mips.BNE (andleft, "0", labeltrue)] @ [Mips.LABEL labeltrue] @
+       [Mips.ADDI (place, place, makeConst 1)] @ [Mips.LABEL labelfalse]
+    end
     
   | Or (e1, e2, pos) =>
+    let val labeltrue = newName "true"
+        val labelfalse = newName "false"
+        val andright = newName "andright"
+        val andleft = newName "andleft"
+        val code1 = compileExp e1 vtable andright
+        val code2 = compileExp e2 vtable andleft
+    in [Mips.MOVE (place, "0")] @ code1 @ [Mips.BNE (andright, "0", labeltrue)]
+       @ code2 @ [Mips.BNE (andleft, "0", labeltrue)] @ [Mips.LABEL labeltrue] @
+       [Mips.ADDI (place, place, makeConst 1)] @ [Mips.LABEL labelfalse]
+    end
     
   | Not (e', pos) =>
-    raise Fail "Unimplemented feature not"
-  | Negate (e', pos) =>
-    raise Fail "Unimplemented feature negate"
+    let val labeltemp = newName "tmp"
+        val code = compileExp e' vtable labeltemp
+        val labeltrue = newName "true"
+    in
+      [Mips.MOVE (place, "0")] @ code @ [Mips.BNE (labeltemp, "0", labeltrue)] @
+      [Mips.LABEL labeltrue, Mips.ADDI (place, place, makeConst 1)]
+    end
+  | Negate (e', pos) => (compileExp e' vtable place) @ [Mips.SUB (place, "0", place)]
 
   | Let (dec, e1, pos) =>
       let val (code1, vtable1) = compileDec dec vtable
@@ -400,10 +422,7 @@ fun compileExp e vtable place =
           [Mips.SLT (place,t1,t2)]
       end
 
-  | And (e1, e2, pos) =>
-    raise Fail "Unimplemented feature &&"
-  | Or (e1, e2, pos) =>
-    raise Fail "Unimplemented feature ||"
+
 
   (* Indexing:
      1. generate code to compute the index

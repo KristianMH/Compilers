@@ -121,12 +121,12 @@ and checkExp ftab vtab (exp : In.Exp)
 
     | In.Not (e, pos)
       => (case checkExp ftab vtab e of
-           | (Bool, e') => (Bool, Out.Not(e', pos))
+            (Bool, e') => (Bool, Out.Not(e', pos))
            | _ => raise Error ("Not operator only supports boolean values", pos) )
 
     | In.Negate (e, pos)
       => (case checkExp ftab vtab e of
-           | (Int, e') => (Int, Out.Negate(e', pos))
+            (Int, e') => (Int, Out.Negate(e', pos))
            | _ => raise Error ("Negate operator only supports integers values", pos) )
 
     (* The types for e1, e2 must be the same. The result is always a Bool. *)
