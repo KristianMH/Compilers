@@ -21,3 +21,9 @@
 *.mtc1
 *.out
 *.synctex.gz
+*.ui
+*.uo
+Parser.sig
+Parser.sml
+Parser.output
+Lexer.sml
