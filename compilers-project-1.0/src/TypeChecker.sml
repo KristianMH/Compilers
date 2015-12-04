@@ -208,7 +208,11 @@ and checkExp ftab vtab (exp : In.Exp)
          end
 
     | In.Iota (n_exp, pos)
-      => raise Fail "Unimplemented feature iota"
+      => let val (e_type, n_exp_dec) = checkExp ftab vtab n_exp
+         in if e_type = Int
+            then (Array Int, Out.Iota (n_exp_dec, pos))
+            else raise Error ("Iota: wrong argument type " ^ ppType e_type, pos)
+         end
                
     | In.Map (f, arr_exp, _, _, pos)
       => raise Fail "Unimplemented feature map"

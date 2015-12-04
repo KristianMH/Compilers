@@ -256,7 +256,14 @@ fun evalExp ( Constant (v,_), vtab, ftab ) = v
         end
 
   | evalExp ( Iota (e, pos), vtab, ftab ) =
-    raise Fail "Unimplemented feature iota"
+    let val sz = evalExp(e, vtab, ftab)
+    in case sz of
+           IntVal n => if n >= 0
+                       then ArrayVal(List.tabulate(n, (fn x => IntVal x)), Int)
+                       else raise Error("Error: In iota call, n is negative:"
+                                       ^ Int.toString(n), pos)
+        | _ => raise Error("Iota argument is not a number" ^ ppVal 0 sz, pos)
+    end
 
   | evalExp ( Map (farg, arrexp, _, _, pos), vtab, ftab ) =
     raise Fail "Unimplemented feature map"

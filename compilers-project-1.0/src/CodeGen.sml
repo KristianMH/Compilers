@@ -462,8 +462,49 @@ fun compileExp e vtable place =
      iota, map, reduce
   *)
   | Iota (n_exp, pos as (line, _)) =>
-    raise Fail "Unimplemented feature iota"
+    let val size_reg = newName "size_reg"
+        val n_code = compileExp n_exp vtable size_reg
+          (* Check that array size N >= 0:
+             if N - 1 >= 0 then jumpto safe_lab
+             jumpto "_IllegalArrSizeError_"
+             safe_lab: ...
+          *)
+        val safe_label = newName "safe_label"
+        val checksize = [Mips.ADDI (size_reg, size_reg, "-1"),
+                        Mips.BGEZ (size_reg, safe_label),
+                        Mips.LI ("5", makeConst line),
+                        Mips.J "_IllegalArrSizeError_",
+                        Mips.LABEL (safe_label),
+                        Mips.ADDI (size_reg, size_reg, "1")]
+        val addr_reg = newName "addr_reg"
+        val i_reg = newName "i_reg"
+        val init_regs = [Mips.ADDI (addr_reg, place, "4"),
+                         Mips.MOVE (i_reg, "0")]
+          (* addr_reg is now the position of the first array element. *)
 
+          (* Run a loop.  Keep jumping back to loop_beg until it is not the
+             case that i_reg < size_reg, and then jump to loop_end. *)
+        val loop_beg = newName "loop_beg"
+        val loop_end = newName "loop_end"
+        val tmp_reg = newName "tmp_reg"
+        val loop_header = [Mips.LABEL loop_beg,
+                          Mips.SUB (tmp_reg, i_reg, size_reg),
+                          Mips.BGEZ (tmp_reg, loop_end)]
+          (* iota is just 'arr[i]=i'. arr[i] is addr_reg *)
+        val loop_iota = [Mips.SW (i_reg, addr_reg, "0")]
+        val loop_footer = [Mips.ADDI (addr_reg, addr_reg, "4"),
+                          Mips.ADDI (i_reg, i_reg, "1"),
+                          Mips.J loop_beg,
+                          Mips.LABEL loop_end]
+    in n_code
+         @ checksize
+         @ dynalloc (size_reg, place, Int)
+         @ init_regs
+         @ loop_header
+         @ loop_iota
+         @ loop_footer
+    end
+                            
   | Map (farg, arr_exp, elem_type, ret_type, pos) =>
     raise Fail "Unimplemented feature map"
 
