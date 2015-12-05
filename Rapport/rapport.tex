@@ -68,8 +68,14 @@
 \pagenumbering{arabic}
 
 \section*{Task 1}
+For this task we have implemented boolean literals true and false as well as multplication, division, negation and not.
+This went as expected, with no particular design choices. Generating the mips code for the logical 'AND' and 'OR', we choose
+to set the result to '0' initially indication false. By doing this we can implement short circuiting by skipping the rest of 
+the calculations if we evaluate the first argument to be false. Thereby leaving the rsult at '0'(false). Similarly for 'OR'.
 
-
+\section*{Task 2}
+Initial work on implementing iota, map and reduce is presented in the code. Only iota has been fully implemented. Concerning map and reduce
+the intepretation, typechecking and codegenerating is work to be done.
 
 \bibliography{references}{}
 \bibliographystyle{plain}
