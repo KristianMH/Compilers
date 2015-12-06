@@ -23,6 +23,7 @@
 *.synctex.gz
 *.ui
 *.uo
+*.d
 Parser.sig
 Parser.sml
 Parser.output
