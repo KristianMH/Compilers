@@ -74,6 +74,13 @@ Params : Type ID COMMA Params
        | Type ID       { Param (#1 $2, $1) :: [] }
 ;
 
+(*  Something like this  :D   *)
+FunArg : Type ID
+       | FN Type ID FEQ Exp
+       | FN Type ID LPAR Params RPAR FEQ Exp
+;
+
+
 Exp :     NUM            { Constant (IntVal (#1 $1), #2 $1) }
         | CHARLIT        { Constant (CharVal (#1 $1), #2 $1) }
         | TRUE           { Constant (BoolVal (true),  $1) }

@@ -36,13 +36,13 @@
        | "int"          => Parser.INT pos
        | "bool"         => Parser.BOOL pos
        | "char"         => Parser.CHAR pos
-       | "fun"          => Parser.FUN pos            
+       | "fun"          => Parser.FUN pos
        | "true"         => Parser.TRUE pos
        | "false"        => Parser.FALSE pos
        | "iota"         => Parser.IOTA pos
        | "map"          => Parser.MAP pos
        | "reduce"       => Parser.REDUCE pos
-              
+
 (* specials: *)
        | "read"         => Parser.READ pos
        | "write"        => Parser.WRITE pos
@@ -80,6 +80,7 @@ rule Token = parse
   | `*`                 { Parser.TIMES  (getPos lexbuf) }
   | `/`                 { Parser.DIVIDE (getPos lexbuf) }
   | `-`                 { Parser.MINUS  (getPos lexbuf) }
+  | "=>"                { Parser.FEQ    (getPos lexbuf) }
   | "=="                { Parser.DEQ    (getPos lexbuf) }
   | `=`                 { Parser.EQ     (getPos lexbuf) }
   | `<`                 { Parser.LTH    (getPos lexbuf) }
@@ -93,7 +94,6 @@ rule Token = parse
   | "&&"                { Parser.AND    (getPos lexbuf) }
   | "||"                { Parser.OR     (getPos lexbuf) }
   | "fn"                { Parser.FN     (getPos lexbuf) }
-  | "=>"                { Parser.FEQ    (getPos lexbuf) }
   | "!"                 { Parser.NOT    (getPos lexbuf) }
   | `~`                 { Parser.NEGATE (getPos lexbuf) }
   | eof                 { Parser.EOF    (getPos lexbuf) }
