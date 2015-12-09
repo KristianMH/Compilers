@@ -74,10 +74,10 @@ Params : Type ID COMMA Params
        | Type ID       { Param (#1 $2, $1) :: [] }
 ;
 
-(*  Something like this  :D   *)
-FunArg : Type ID
-       | FN Type ID FEQ Exp
-       | FN Type ID LPAR Params RPAR FEQ Exp
+
+FunArg : Type ID { FunName (#1 $2)}
+       | FN Type ID FEQ Exp { Lambda ($2, [], $5, $1) }
+       | FN Type ID LPAR Params RPAR FEQ Exp { Lambda ($2, $5, $8, $1) }
 ;
 
 

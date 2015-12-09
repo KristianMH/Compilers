@@ -266,10 +266,29 @@ fun evalExp ( Constant (v,_), vtab, ftab ) = v
     end
 
   | evalExp ( Map (farg, arrexp, _, _, pos), vtab, ftab ) =
-    raise Fail "Unimplemented feature map"
+    let val arr = evalExp(arrexp, vtab, ftab)
+        fun argHelper x = evalFunArg(farg, vtab, ftab, pos, [x])
+        val funretType  = rtpFunArg (farg, ftab, pos)
+    in case arr of
+           ArrayVal(xs, tp) => ArrayVal(List.map (fn x => argHelper x) xs, funretType)
+         | _ => raise Error ("Map 2nd argument is not an array", pos)
+    end 
+
 
   | evalExp ( Reduce (farg, ne, arrexp, tp, pos), vtab, ftab ) =
-    raise Fail "Unimplemented feature reduce"
+    let val arr = evalExp(arrexp, vtab, ftab)
+        val neutralelement = evalExp(ne, vtab, ftab)
+        fun argHelper [] =  raise Error("haha",pos)
+          | argHelper [x] = evalFunArg(farg, vtab, ftab, pos, [neutralelement, x])
+          | argHelper (x::xs) = evalFunArg(farg, vtab, ftab, pos, [argHelper xs, x])
+    in
+    case (arr, neutralelement) of
+        (ArrayVal(xs, Int), IntVal n) => argHelper xs
+      | (ArrayVal(xs, Bool), BoolVal n) => argHelper xs
+      | (ArrayVal(xs, Char), CharVal n) => argHelper xs
+      | (ArrayVal(xs, t), _) => raise Error ("Neutral element is not valid", pos)
+      | (_,_) => raise Error ("Reduce 3rd arguement is not a list.", pos)
+    end
 
   | evalExp ( Read (t,p), vtab, ftab ) =
         let val str =
@@ -326,8 +345,7 @@ and rtpFunArg (FunName fid, ftab, callpos) =
 
 (* evalFunArg takes as argument a FunArg, a vtable, an ftable, the
 position where the call is performed, and the list of actual arguments.
-It returns a pair of two values: the result of calling the (lambda) function, 
-and the return type of the FunArg.
+It returns a value : the result of calling the (lambda) function
  *)
 and evalFunArg (FunName fid, vtab, ftab, callpos, aargs) =
     let
