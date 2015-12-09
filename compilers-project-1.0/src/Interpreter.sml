@@ -278,9 +278,8 @@ fun evalExp ( Constant (v,_), vtab, ftab ) = v
   | evalExp ( Reduce (farg, ne, arrexp, tp, pos), vtab, ftab ) =
     let val arr = evalExp(arrexp, vtab, ftab)
         val neutralelement = evalExp(ne, vtab, ftab)
-        fun argHelper [] =  raise Error("haha",pos)
-          | argHelper [x] = evalFunArg(farg, vtab, ftab, pos, [neutralelement, x])
-          | argHelper (x::xs) = evalFunArg(farg, vtab, ftab, pos, [argHelper xs, x])
+        fun argHelper xs = foldl (fn (x, y) => evalFunArg (farg, vtab, ftab, pos, [x, y]))
+                                 neutralelement xs
     in
     case (arr, neutralelement) of
         (ArrayVal(xs, Int), IntVal n) => argHelper xs
