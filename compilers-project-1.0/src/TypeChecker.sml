@@ -57,7 +57,13 @@ fun printable (Int) = true
   | printable (Char) = true
   | printable (Array Char) = true
   | printable _ = false  (* For all other array types *)
-
+                      
+(* returns the element type of an Array type *)
+fun getEleType Int = Int
+  | getEleType Bool = Bool
+  | getEleType Char = Char
+  | getEleType (Array x) = x
+                                      
 (* Type-check the two operands to a binary operator - they must both be of type 't' *)
 fun checkBinOp ftab vtab (pos, t, e1, e2) =
     let val (t1, e1') = checkExp ftab vtab e1
@@ -215,10 +221,24 @@ and checkExp ftab vtab (exp : In.Exp)
          end
                
     | In.Map (f, arr_exp, _, _, pos)
-      => raise Fail "Unimplemented feature map"
-               
+      => let val (f_dec, ret_type, arg_type) = checkFunArg (f, vtab, ftab, pos)
+             val (arr_type, arr_dec) = checkExp ftab vtab arr_exp                           
+         in
+           if getEleType (hd(arg_type)) = getEleType arr_type andalso length(arg_type) = 1
+           then (Array ret_type, Out.Map(f_dec, arr_dec, hd(arg_type), ret_type, pos))
+           else raise Fail "TBA "
+         end
     | In.Reduce (f, n_exp, arr_exp, _, pos)
-      => raise Fail "Unimplemented feature reduce"
+      => let val (f_dec, ret_type, arg_type) = checkFunArg (f, vtab, ftab, pos)
+             val (arr_type, arr_dec) = checkExp ftab vtab arr_exp
+             val (n_type, n_dec) = checkExp ftab vtab n_exp
+         in
+           if length(arg_type) =2 andalso (hd(arg_type)) = getEleType arr_type
+              andalso getEleType arr_type = n_type andalso n_type = ret_type
+              andalso List.nth(arg_type, 1) = n_type
+           then (ret_type, Out.Reduce(f_dec, n_dec, arr_dec, ret_type, pos))
+           else raise Error ("TBA 2nd.",pos)
+         end
 
 and checkFunArg (In.FunName fname, vtab, ftab, pos) =
     (case SymTab.lookup fname ftab of

@@ -75,9 +75,9 @@ Params : Type ID COMMA Params
 ;
 
 
-FunArg : Type ID { FunName (#1 $2)}
-       | FN Type ID FEQ Exp { Lambda ($2, [], $5, $1) }
-       | FN Type ID LPAR Params RPAR FEQ Exp { Lambda ($2, $5, $8, $1) }
+FunArg : ID { FunName (#1 $1)}
+       | FN Type LPAR RPAR FEQ Exp { Lambda ($2, [], $6, $1) }
+       | FN Type LPAR Params RPAR FEQ Exp { Lambda ($2, $4, $7, $1) }
 ;
 
 

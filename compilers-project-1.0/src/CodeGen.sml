@@ -506,11 +506,11 @@ fun compileExp e vtable place =
     end
                             
   | Map (farg, arr_exp, elem_type, ret_type, pos) =>
-    raise Fail "Unimplemented feature map"
+    raise Fail "CodeGen: Unimplemented feature map"
 
   (* reduce(f, acc, {x1, x2, ...}) = f(..., f(x2, f(x1, acc))) *)
   | Reduce (binop, acc_exp, arr_exp, tp, pos) =>
-    raise Fail "Unimplemented feature reduce"
+    raise Fail "CodeGen:Unimplemented feature reduce"
 
 (* compile condition *)
 and compileCond c vtable tlab flab =
