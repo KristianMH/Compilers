@@ -43,9 +43,11 @@
        | "map"          => Parser.MAP pos
        | "reduce"       => Parser.REDUCE pos
        | "fn"           => Parser.FN pos
+
 (* specials: *)
        | "read"         => Parser.READ pos
        | "write"        => Parser.WRITE pos
+       | "op"           => Parser.OP pos
        | _              => Parser.ID (s, pos)
 
  }

@@ -27,10 +27,10 @@ open Fasto.UnknownTypes
 %token <(int*int)> MAP
 %token <(int*int)> REDUCE
 %token <(int*int)> FN
-%token <(int*int)> FEQ
+%token <(int*int)> FEQ OP
  
 %nonassoc ifprec letprec
-%nonassoc TRUE FALSE 
+%nonassoc TRUE FALSE OP
 %left TIMES
 %left DIVIDE
 %left OR
@@ -46,8 +46,8 @@ open Fasto.UnknownTypes
 %type <Fasto.Param list> Params
 %type <Fasto.UnknownTypes.Exp> Exp
 %type <Fasto.UnknownTypes.Exp list> Exps
+%type <Fasto.UnknownTypes.FunArg> BinOp
 %type <Fasto.UnknownTypes.FunArg> FunArg
-
 %%
 
 Prog :    FunDecs EOF   { $1 }
@@ -80,6 +80,17 @@ FunArg : ID { FunName (#1 $1)}
        | FN Type LPAR Params RPAR FEQ Exp { Lambda ($2, $4, $7, $1) }
 ;
 
+BinOp : OP PLUS  { Lambda (Int, [Param ("x", Int), Param("y", Int)],
+                        Plus (Var("x", $2), Var("y", $2), $2), $2)}
+      | OP MINUS  { Lambda (Int, [Param ("x", Int), Param("y", Int)],
+                         Minus (Var("x", $2), Var("y", $2), $2), $2)}
+      | OP TIMES  { Lambda (Int, [Param ("x", Int), Param("y", Int)],
+                         Times (Var("x", $2), Var("y", $1), $2), $2)}
+      | OP DIVIDE  { Lambda (Int, [Param ("x", Int), Param("y", Int)],
+                          Divide (Var("x", $2), Var("y", $2), $2), $2)}
+;
+
+
 
 Exp :     NUM            { Constant (IntVal (#1 $1), #2 $1) }
         | CHARLIT        { Constant (CharVal (#1 $1), #2 $1) }
@@ -102,8 +113,12 @@ Exp :     NUM            { Constant (IntVal (#1 $1), #2 $1) }
         | IOTA LPAR Exp RPAR
                           { Iota   ($3, $1)    }
         | MAP LPAR FunArg COMMA Exp RPAR
-                          { Map ($3, $5,(), (), $1)   }
+                          { Map ($3, $5,(), (), $1) }
         | REDUCE LPAR FunArg COMMA Exp COMMA Exp RPAR
+                          { Reduce ($3, $5, $7,(), $1) }
+        | MAP LPAR BinOp COMMA Exp RPAR
+                          { Map($3, $5, (), (), $1) }                 
+        | REDUCE LPAR BinOp COMMA Exp COMMA Exp RPAR
                           { Reduce ($3, $5, $7,(), $1) }
         | IF Exp THEN Exp ELSE Exp %prec ifprec
                          { If ($2, $4, $6, $1) }
