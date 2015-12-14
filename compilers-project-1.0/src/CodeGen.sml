@@ -76,7 +76,10 @@ fun elemSizeToInt One = 1
 fun mipsStore elem_size = case elem_size of
                               One => Mips.SB
                             | Four => Mips.SW
-
+(* Pick the correct load instruction form the element size *)
+fun mipsLoad elem_size = case elem_size of
+                              One => Mips.LB
+                            | Four => Mips.LW                                       
 (* generates the code to check that the array index is within bounds *)
  fun checkBounds(arr_beg, ind_reg, (line,c)) =
       let val size_reg = newName "size_reg"
@@ -248,15 +251,14 @@ fun compileExp e vtable place =
     end
   | And (e1, e2, pos) =>
     let val labelnext = newName "next"
-        val labeltrue = newName "true"
         val labelfalse = newName "false"
         val andright = newName "andright"
         val andleft = newName "andleft"
         val code1 = compileExp e1 vtable andright
         val code2 = compileExp e2 vtable andleft
-    in [Mips.MOVE (place, "0")] @ code1 @ [Mips.BNE (andright, "0", labelnext)]
+    in [Mips.MOVE (place, "0")] @ code1 @ [Mips.BNE (andleft, "0", labelnext)]
        @ [Mips.J labelfalse] @ [Mips.LABEL labelnext] @ code2
-       @ [Mips.BNE (andleft, "0", labeltrue)] @ [Mips.LABEL labeltrue] @
+       @ [Mips.BEQ (andright, "0", labelfalse)] @
        [Mips.ADDI (place, place, makeConst 1)] @ [Mips.LABEL labelfalse]
     end
     
@@ -506,7 +508,48 @@ fun compileExp e vtable place =
     end
                             
   | Map (farg, arr_exp, elem_type, ret_type, pos) =>
-    raise Fail "CodeGen: Unimplemented feature map"
+    let val fname = (case farg of
+                         FunName name => name
+                       | Lambda x => "<Anonymous>")
+        val elem_size = getElemSize elem_type      
+        val elem_size_string = Int.toString(elemSizeToInt (elem_size))
+        val elem_ret_size = getElemSize ret_type 
+        val elem_ret_size_string = Int.toString(elemSizeToInt (elem_ret_size))
+        val line = (case pos of (line,_) => line )
+        (* checking size of array. *)                        
+        val arr_reg = newName "arr_reg"
+        val arr_code = compileExp arr_exp vtable arr_reg
+        val safe_label = newName "safe_label"
+        val checksize = [Mips.ADDI (arr_reg, arr_reg, "-1"),
+                        Mips.BGEZ (arr_reg, safe_label),
+                        Mips.LI ("5", makeConst line),
+                        Mips.J "_IllegalArrSizeError_",
+                        Mips.LABEL (safe_label),
+                        Mips.ADDI (arr_reg, arr_reg, "1")]
+        (* Inserts the length of the new array *)
+        val arr_size = [Mips.MOVE(place, arr_reg)]
+        (* iteratores for arrays *)
+        val r_itx = newName "R_itx"
+        val r_ity = newName "R_ity"
+        val r_i   = newName "R_i"
+        val r_tempx = newName "R_tempx"
+        val r_tempy = newName "R_tempy"
+        val init_iterators = [Mips.MOVE(r_itx, arr_reg),
+                              Mips.MOVE(r_ity, place),
+                              Mips.ADDI(r_i, "0", "1")]
+        val loop_body = [Mips.ADDI(r_itx, r_itx, elem_size_string),
+                         Mips.ADDI(r_itx, r_ity, elem_ret_size_string),
+                         mipsLoad(elem_size)(r_tempx, r_itx, "0"),
+                                 (* Function CALL!! code on tempx, save tempy *)
+                         mipsStore(elem_ret_size)(r_tempy, r_ity, "0")
+                        ]
+                                 
+    in arr_code @
+       checksize @
+       dynalloc(arr_reg, place, ret_type) @
+       arr_size 
+    end
+                        
 
   (* reduce(f, acc, {x1, x2, ...}) = f(..., f(x2, f(x1, acc))) *)
   | Reduce (binop, acc_exp, arr_exp, tp, pos) =>

@@ -126,15 +126,13 @@ and checkExp ftab vtab (exp : In.Exp)
          in (Bool, Out.Or (e1_dec, e2_dec, pos)) end
 
     | In.Not (e, pos)
-      => (case checkExp ftab vtab e of
-            (Bool, e') => (Bool, Out.Not(e', pos))
-           | _ => raise Error ("Not operator only supports boolean values", pos) )
-
+      => let val (e_type, e_dec) = checkExp ftab vtab e in
+           ((checkTypesEqualOrError pos (e_type, Bool)), Out.Not(e_dec, pos))
+         end
     | In.Negate (e, pos)
-      => (case checkExp ftab vtab e of
-            (Int, e') => (Int, Out.Negate(e', pos))
-           | _ => raise Error ("Negate operator only supports integers values", pos) )
-
+      => let val (e_type, e_dec) = checkExp ftab vtab e in
+           ((checkTypesEqualOrError pos (e_type, Int)), Out.Not(e_dec, pos))
+         end
     (* The types for e1, e2 must be the same. The result is always a Bool. *)
     | In.Equal (e1, e2, pos)
       => let val (t1, e1') = checkExp ftab vtab e1
