@@ -553,7 +553,40 @@ fun compileExp e vtable place =
 
   (* reduce(f, acc, {x1, x2, ...}) = f(..., f(x2, f(x1, acc))) *)
   | Reduce (binop, acc_exp, arr_exp, tp, pos) =>
-    raise Fail "CodeGen:Unimplemented feature reduce"
+    let  val line = (case pos of (line,_) => line )
+        (* checking size of array. *)                        
+        val arr_reg = newName "arr_reg"
+        val arr_code = compileExp arr_exp vtable arr_reg
+        val neutral_reg = newName "Neutral_reg"
+        val neutral_code = compileExp acc_exp vtable neutral_reg
+        val safe_label = newName "safe_label"
+        val checksize = [Mips.ADDI (arr_reg, arr_reg, "-1"),
+                        Mips.BGEZ (arr_reg, safe_label),
+                        Mips.LI ("5", makeConst line),
+                        Mips.J "_IllegalArrSizeError_",
+                        Mips.LABEL (safe_label),
+                        Mips.ADDI (arr_reg, arr_reg, "1")]
+        val elem_size = getElemSize tp      
+        val elem_size_string = Int.toString(elemSizeToInt (elem_size))
+    (* iterator for loop *)
+        val r_itx = newName "R_itx"
+        val r_i   = newName "R_i"
+        val r_tempx = newName "R_tempx"
+        val init_iterators = [Mips.MOVE(r_itx, arr_reg),
+                              Mips.MOVE(place, neutral_reg),
+                              Mips.MOVE(r_i, "0")]
+                                 
+        val loop_body= [Mips.ADDI(r_itx, r_itx, elem_size_string),
+                        mipsLoad(elem_size)(r_tempx, r_itx, "0"),
+                       (* Function magic which saves result in place *)
+                       Mips.ADDI(r_i, r_i, "1")]
+    in
+      arr_code @
+      neutral_code @
+      checksize @
+      init_iterators @
+      loop_body
+    end
 
 (* compile condition *)
 and compileCond c vtable tlab flab =
