@@ -512,49 +512,46 @@ fun compileExp e vtable place =
         val elem_size_string = Int.toString(elemSizeToInt (elem_size))
         val elem_ret_size = getElemSize ret_type 
         val elem_ret_size_string = Int.toString(elemSizeToInt (elem_ret_size))                 
-        val arr_reg = newName "arr_reg"
-        val arr_code = compileExp arr_exp vtable arr_reg
+        val arr_reg = newName "arr_reg"                              
+        val arr_size = newName "size_reg"
+        val arr_code = compileExp arr_exp vtable arr_reg @ [Mips.LW(arr_size, arr_reg, "0")]
         (* Inserts the length of the new array *)
-        val temp_size = newName "size_reg"
-        val arr_size = [Mips.LW(temp_size, arr_reg, "0"), Mips.SW(temp_size, place , "0")]
-        (* iteratores for arrays *)
-        val r_itx = newName "R_itx"
-        val r_ity = newName "R_ity"
+        val update_arr_size = [Mips.SW(arr_size, place , "0")]
+        (* iteratores for arrays, itx and ity starts with offset 1 *)
+        val r_itx = newName "R_itx" (*address of array *)
+        val r_ity = newName "R_ity" (*address for elements in result array*)
         val r_i   = newName "R_i"
         val r_tempx = newName "R_tempx"
         val r_tempy = newName "R_tempy"
         val r_temp = newName "R_temp"
-        val init_iterators = [Mips.MOVE(r_itx, arr_reg),
-                              Mips.MOVE(r_ity, place),
-                              Mips.MOVE(r_i,"0"),
-                              Mips.ADDI(r_i, r_i, makeConst 1)]                  
+        val init_iterators = [Mips.ADDI(r_itx, arr_reg, elem_size_string),
+                              Mips.ADDI(r_ity, place, elem_ret_size_string),
+                              Mips.MOVE(r_i,"0")]                  
         val loop_beg = newName "loop_beg"
         val loop_end = newName "loop_end"
         val loop_header = [Mips.LABEL loop_beg,
-                           Mips.SUB(r_temp, r_i, temp_size), 
+                           Mips.SUB(r_temp, r_i, arr_size), 
                            Mips.BGEZ (r_temp, loop_end)]
-        val loop_body = [  Mips.ADDI(r_itx, r_itx, makeConst (elemSizeToInt elem_size)),
-                           Mips.ADDI(r_ity, r_ity, makeConst (elemSizeToInt elem_ret_size)),
-                           mipsLoad(elem_size)(r_tempx, r_itx, "0")] @
-                        (* Function CALL!! code on tempx, save tempy *)
-                        compileFunArg(farg,[r_tempx], vtable, r_tempx, pos) 
-                         @ [mipsStore(elem_ret_size)(r_tempx, r_ity, "0"),
-                             Mips.ADDI(r_i, r_i, makeConst 1),
-                             Mips.J loop_beg,
-                             Mips.LABEL loop_end
-                        ]
+        val loop_body = mipsLoad(elem_size)(r_tempx, r_itx, "0") ::
+                        compileFunArg(farg,[r_tempx], vtable, r_tempy, pos) 
+                        @ [mipsStore(elem_ret_size)(r_tempy, r_ity, "0"),
+                           Mips.ADDI(r_ity, r_ity, elem_ret_size_string),
+                           Mips.ADDI(r_itx, r_itx, elem_size_string),
+                           Mips.ADDI(r_i, r_i, "1"),
+                           Mips.J loop_beg,
+                           Mips.LABEL loop_end
+                          ]
     in arr_code @
-       dynalloc(arr_reg, place, ret_type) @
-       arr_size @
+       dynalloc(arr_size, place, ret_type) @
+       update_arr_size @
        init_iterators @
        loop_header @
        loop_body
-    end
-                        
+    end 
 
   (* reduce(f, acc, {x1, x2, ...}) = f(..., f(x2, f(x1, acc))) *)
   | Reduce (binop, acc_exp, arr_exp, tp, pos) =>
-    let (* checking size of array. *)                        
+    let                         
         val arr_reg = newName "arr_reg"
         val arr_code = compileExp arr_exp vtable arr_reg
         val neutral_reg = newName "Neutral_reg"
@@ -566,28 +563,30 @@ fun compileExp e vtable place =
         val r_i   = newName "R_i"
         val r_tempx = newName "R_tempx"
         val r_temp = newName "R_temp"
-        val r_temp = newName "R_temp"
-        val init_iterators = [Mips.MOVE(r_itx, arr_reg),
+        val r_tempres = newName "R_tempRes"
+        val arr_size = newName "arr_size"
+        val init_iterators = [Mips.ADDI(r_itx, arr_reg, elem_size_string),
                               Mips.MOVE(place, neutral_reg),
-                              Mips.MOVE(r_i, "0")]
+                              Mips.MOVE(r_i, "0"),
+                              Mips.LW(arr_size, arr_reg, "0")]
         val loop_beg = newName "loop_beg"
         val loop_end = newName "loop_end"
         val loop_header = [Mips.LABEL loop_beg,
-                          Mips.SUB (r_temp, r_i, arr_reg),
+                          Mips.SUB (r_temp, r_i, arr_size),
                           Mips.BGEZ (r_temp, loop_end)]                        
-        val loop_body= [Mips.ADDI(r_itx, r_itx, elem_size_string),
-                        mipsLoad(elem_size)(r_tempx, r_itx, "0"),
+        val loop_body=  mipsLoad(elem_size)(r_tempx, r_itx, "0") ::
                        (* Function magic which saves result in place *)
-                       Mips.ADDI(r_i, r_i, "1"),
-                       Mips.J loop_beg]
-        val loop_stop = [Mips.LABEL loop_end]
+                        compileFunArg(binop, [place, r_tempx], vtable, place, pos) @
+                       [ Mips.ADDI(r_i, r_i, "1"),
+                         Mips.ADDI(r_itx, r_itx, elem_size_string),
+                         Mips.J loop_beg,
+                         Mips.LABEL loop_end]
     in
       arr_code @
       neutral_code @
       init_iterators @
       loop_header @
-      loop_body @
-      loop_stop
+      loop_body
     end
         
 and compileFunArg (FunName name, args, vtable(*used for lamda expression*), place, pos) =
