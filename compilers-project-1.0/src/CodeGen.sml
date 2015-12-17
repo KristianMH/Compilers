@@ -594,6 +594,7 @@ and compileFunArg (FunName name, args, vtable(*used for lamda expression*), plac
     in
       applyRegs(name, args, temp_reg, pos) @ [Mips.MOVE(place, temp_reg)]
     end
+        (* Lambda expression case!*) 
     
 (* compile condition *)
 and compileCond c vtable tlab flab =

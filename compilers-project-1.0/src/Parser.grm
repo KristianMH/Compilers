@@ -28,9 +28,8 @@ open Fasto.UnknownTypes
 %token <(int*int)> REDUCE
 %token <(int*int)> FN
 %token <(int*int)> FEQ OP
- 
-%nonassoc ifprec letprec
-%nonassoc OP
+ (* Precedence needs to be fixed aswell. Bug happens.*)
+%nonassoc ifprec letprec OP
 %left DEQ LTH AND OR
 %nonassoc NEGATE 
 %left PLUS MINUS

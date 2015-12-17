@@ -282,6 +282,7 @@ fun evalExp ( Constant (v,_), vtab, ftab ) = v
                                  neutralelement xs
     in
     case (arr, neutralelement) of
+        (* This might be wrong? due to not supporting multi dim arrays*)
         (ArrayVal(xs, Int), IntVal n) => argHelper xs
       | (ArrayVal(xs, Bool), BoolVal n) => argHelper xs
       | (ArrayVal(xs, Char), CharVal n) => argHelper xs

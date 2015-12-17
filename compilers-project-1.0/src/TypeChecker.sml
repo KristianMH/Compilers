@@ -231,6 +231,7 @@ and checkExp ftab vtab (exp : In.Exp)
              val (arr_type, arr_dec) = checkExp ftab vtab arr_exp
              val (n_type, n_dec) = checkExp ftab vtab n_exp
          in
+           (* Ask Instructor/cosmin about this ?*)
            if length(arg_type) =2 andalso (hd(arg_type)) = getEleType arr_type
               andalso getEleType arr_type = n_type andalso n_type = ret_type
               andalso List.nth(arg_type, 1) = n_type
