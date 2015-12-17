@@ -69,15 +69,20 @@
 \pagenumbering{arabic}
 
 \section*{Task 1}
-For this task we have implemented boolean literals true and false as well as multplication, division, negation and not.
-This went as expected, with no particular design choices. Generating the mips code for the logical 'AND' and 'OR', we choose
+For this task we have implemented Boolean literals true and false as well as multiplication, division, negation and not.
+This went as expected, with no particular design choices. Generating the MIPS code for the logical 'AND' and 'OR', we choose
 to set the result to '0' initially indication false. By doing this we can implement short circuiting by skipping the rest of 
-the calculations if we evaluate the first argument to be false. Thereby leaving the rsult at '0'(false). Similarly for 'OR'.
+the calculations if we evaluate the first argument to be false. Thereby leaving the result at '0'(false). Similarly for 'OR'.
 
 \section*{Task 2}
 Initial work on implementing iota, map and reduce is presented in the code. Only iota has been fully implemented. Concerning map and reduce
-the intepretation, typechecking and codegenerating is work to be done.
-
+the interpretation, type-checking and code-generating is work to be done.
+\subsection*{Codegen for Map and Reduce}
+Our approach for Map is we are making to iterators for our arrays, one for argument array and another for result array. They are set to the address of the array, which we got by compiling the array argument and placing the address in "addr\_reg". The iterator for the result array is set to point at the place of the result address.\\
+Then we use Mips.LW on "addr\_reg" to get the size of result array and store it at the place address. Since our iterators is pointing at same element index for both result and argument array, we simply load the element from argument array and apply the given function on it and store it at the address pointed by our result array iterator. For applying function on a given argument we have created a mutually recursive function "CompileFunArg" which generates the required Mips code for that.\\
+In order to generic code for different types we are supporting (char, integer and bool) we either have to use Mips.LW or Mips.LB same goes for store operations. The solution was to create two functions mipsStore and mipsLoad that both takes a type is argument and returns the correct Mips operation.\\
+Then we simply create a "while" loop where in at the start checks if our index variable is greater then the size of the array, if so we jump to the end of the code. If not we load the element from address pointed from "r\_itx" and call CompileFunArg with the requited argument. Last we store the result at the address pointed by "r\_ity", the we add the correct offset to our address pointers depending on type and jump back to the beginning of the loop. \\ \\
+For reduce we used same approach but only having one pointer for the argument array. First we compile the neutral element and array and placing the at the desired registers. Then we move the neutral element into the result address, cause we intent to save the function result of the given function in the place address. This simplifies it in our loop because the two arguments for our functions is the arr[i] and place. Then we save the result of the function in place for next iteration for the loop.
 %\bibliography{references}{}
 %\bibliographystyle{plain}
 \end{document}
