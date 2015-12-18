@@ -97,6 +97,14 @@ fun mipsLoad elem_size = case elem_size of
          ]
       end
 
+ (* Binds arguments to Vtable. removes type from params list*)
+fun bindArgsToVtab [] [] vtable = vtable
+  | bindArgsToVtab (p::params) (a::args) vtable = 
+    let val Param (param_name,t)= p
+    in
+      bindArgsToVtab params args (SymTab.bind param_name a vtable)
+    end
+  | bindArgsToVtab _ _ _ = raise Fail ("Number of arguments and parameter is not the same")
 (* dynalloc(size_reg, place, ty) generates code for allocating arrays of heap
    memory by incrementing the HP register (heap pointer) by a number of words.
    The arguments for this function are as follows:
@@ -592,7 +600,13 @@ and compileFunArg (FunName name, args, vtable(*used for lamda expression*), plac
     in
       applyRegs(name, args, temp_reg, pos) @ [Mips.MOVE(place, temp_reg)]
     end
-        (* Lambda expression case!*) 
+        (* Lambda expression case!*)
+  | compileFunArg (Lambda (ret_type, params, body,_),args, vtable, place, pos) =
+    let
+      val vtable' = bindArgsToVtab params args vtable
+    in
+      compileExp body vtable' place
+    end
     
 (* compile condition *)
 and compileCond c vtable tlab flab =
@@ -607,7 +621,6 @@ and compileDec (Dec (s,e,pos)) vtable =
           val new_vtable = SymTab.bind s t vtable
       in (code, new_vtable)
       end
-
 (* code for saving and restoring callee-saves registers *)
 fun stackSave currentReg maxReg savecode restorecode offset =
   if currentReg > maxReg

@@ -30,11 +30,12 @@ open Fasto.UnknownTypes
 %token <(int*int)> FEQ OP
 
 %nonassoc ifprec letprec OP
-%left DEQ LTH AND OR
-%nonassoc NEGATE 
+%left AND OR
+%left DEQ LTH 
+%nonassoc NOT
 %left PLUS MINUS
 %left TIMES DIVIDE 
-%nonassoc NOT
+%nonassoc NEGATE
 
 %start Prog
 %type <Fasto.UnknownTypes.Prog> Prog
@@ -113,9 +114,7 @@ Exp :     NUM            { Constant (IntVal (#1 $1), #2 $1) }
         | MAP LPAR FunArg COMMA Exp RPAR
                           { Map ($3, $5,(), (), $1) }
         | REDUCE LPAR FunArg COMMA Exp COMMA Exp RPAR
-                          { Reduce ($3, $5, $7,(), $1) }
-        | MAP LPAR BinOp COMMA Exp RPAR
-                          { Map($3, $5, (), (), $1) }                 
+                          { Reduce ($3, $5, $7,(), $1) }            
         | REDUCE LPAR BinOp COMMA Exp COMMA Exp RPAR
                           { Reduce ($3, $5, $7,(), $1) }
         | IF Exp THEN Exp ELSE Exp %prec ifprec
