@@ -270,7 +270,7 @@ fun evalExp ( Constant (v,_), vtab, ftab ) = v
         fun argHelper x = evalFunArg(farg, vtab, ftab, pos, [x])
         val funretType  = rtpFunArg (farg, ftab, pos)
     in case arr of
-           ArrayVal(xs, tp) => ArrayVal(List.map (fn x => argHelper x) xs, funretType)
+           ArrayVal(xs, tp) => ArrayVal(List.map argHelper xs, funretType)
          | _ => raise Error ("Map 2nd argument is not an array", pos)
     end 
 
@@ -281,13 +281,9 @@ fun evalExp ( Constant (v,_), vtab, ftab ) = v
         fun argHelper xs = foldl (fn (x, y) => evalFunArg (farg, vtab, ftab, pos, [x, y]))
                                  neutralelement xs
     in
-    case (arr, neutralelement) of
-        (* This might be wrong? due to not supporting multi dim arrays*)
-        (ArrayVal(xs, Int), IntVal n) => argHelper xs
-      | (ArrayVal(xs, Bool), BoolVal n) => argHelper xs
-      | (ArrayVal(xs, Char), CharVal n) => argHelper xs
-      | (ArrayVal(xs, t), _) => raise Error ("Neutral element is not valid", pos)
-      | (_,_) => raise Error ("Reduce 3rd arguement is not a list.", pos)
+    case arr of
+        ArrayVal(xs, _) => argHelper xs
+      | _ => raise Error ("Reduce 3rd arguement is not a list.", pos)
     end
 
   | evalExp ( Read (t,p), vtab, ftab ) =
