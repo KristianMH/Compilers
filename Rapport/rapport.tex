@@ -71,7 +71,7 @@
 \subsection*{Lexer and Parser}
 In completing the compiler for fasto, we first look at the lexer. 
 Here we have implimented true and false, so that the lexer recogknizes them as tokens.
-'&&', '||', '!', and '~' will also be recognized by the lexer as the logical operators 
+'\&\&', \ '||', \ '!', and $'\sim'$ will also be recognized by the lexer as the logical operators 
 'AND', 'OR', 'NOT' and 'NEGATE' respectively. 
 Multiplication and division is handled in the same way as plus and minus, in the lexer as well as the parser.
 \\\\
@@ -104,6 +104,9 @@ In order to generic code for different types we are supporting (char, integer an
 The solution was to create two functions mipsStore and mipsLoad that both takes a type as argument and returns the correct Mips operation.\\
 Then we simply create a "while" loop where we check if our index variable is greater then the size of the array. If so we jump to the end of the code. If not we load the element from the address pointed out by "r\_itx" and call CompileFunArg with the required argument. Last we store the result at the address pointed by "r\_ity", the we add the correct offset to our address pointers depending on type and jump back to the beginning of the loop. \\ \\
 For reduce we used the same approach, except we only need one pointer (for the argument array). First we compile the neutral element and the array. Then we place them at the desired registers. We then move the neutral element into the result address, as we intent to save the function result of the given function in the place address. This simplifies it in our loop because the two arguments for our functions is the arr[i] and place. Then we save the result of the function in place for the next iteration for the loop.
+\\
+Our function "CompileFunArg" supports FunDec and Lambda expressions. In case of FunDec we simple create a new register for the result and use the given function applyRegs with the function name, arguments, temp\_reg and position. Then we move the result from temp\_reg to place.\\
+The Lambda case is move tricky. First we have to bind the parameters to the arguments and bind them to the vtable. Inorder to bind parameters and arguments to vtable we created a function "bindArgsToVtab" which takes two lists parameters and arguments and a vtable. Then it recursively bind the pair param arg into vtable. when lists is empty it returns the vtable. It raises a Fail expection if arguments and parameters have different lengths.
 %\bibliography{references}{}
 %\bibliographystyle{plain}
 \end{document}
