@@ -68,17 +68,35 @@
 \setcounter{page}{1}
 \pagenumbering{arabic}
 
-\section*{Task 1}
-For this task we have implemented Boolean literals true and false as well as multiplication, division, negation and not.
-This went as expected, with no particular design choices. Generating the MIPS code for the logical 'AND' and 'OR', we choose
-to set the result to '0' initially indication false. By doing this we can implement short circuiting by skipping the rest of 
-the calculations if we evaluate the first argument to be false. Thereby leaving the result at '0'(false). Similarly for 'OR'.
+\subsection*{Lexer and Parser}
+In completing the compiler for fasto, we first look at the lexer. 
+Here we have implimented true and false, so that the lexer recogknizes them as tokens.
+'&&', '||', '!', and '~' will also be recognized by the lexer as the logical operators 
+'AND', 'OR', 'NOT' and 'NEGATE' respectively. 
+Multiplication and division is handled in the same way as plus and minus, in the lexer as well as the parser.
+\\\\
+The fasto language has to support the functions, map, reduce and iota. 
+In order to for that to happen 'map', 'reduce' and 'iota' has been added to the lexer.
+As map and reduce allows for anonymous function we need the lexer to accept 'fn', '=>' and 'op'.
+All of the abovestanding has been defined in the parser, coresponding to the expected syntax of the Fasto language.
+In the parser we introduce FunArg, in order to handle regular and anonymous functions for map and reduce. Furthermore reduce has a case 
+where it takes a binary operator as. To handle this we created the type 'BinOp', which supports multiplication, division, subtraction and addition. Each of the cases are translated into a lambda expression. 
+\\\\
+In the Parser all apropriate associativities has been added. 'OP', 'NEGATE' and 'NOT' are nonassociative as they are unary operators.
+The rest is left associative. The order of precedence is clearly visible in the code, and is dictated by the definition of the Fasto language.
 
-\section*{Task 2}
-Initial work on implementing iota, map and reduce is presented in the code. Only iota has been fully implemented. Concerning map and reduce
-the interpretation, type-checking and code-generating is work to be done.
+
+\subsection*{Interpreter}
+Working with the interpreter we expanded on the 'evalExp' function to support multiplication, division, logical AND and OR operator, as well as NOT and NEGATE. Furthermore we added cases for the SOACs. Map is implimented using the provided functions 'evalFunArg' and 'rtpFunArg' as well as the helperfunction 'argHelper' we created. 'argHelper' takes an element and calls 'evalFunArg' using that element and the given funArg. We evaluate the specified arrayexpression recursively, and gets the returntype of the funArg by using 'rtpFunArg'. Using sml's 'map' function we create a new arrayVal with the expected returntype. \\ 'Reduce' is implimented in a similar way, using sml's 'foldl' function.  
+
+\subsection*{Typechecker}
+The cases mentioned for the 'evalExp' function above, are the same cases we handle in the 'checkExp' in the typechecker. 
+Concerning map we make sure that the functions input type matches the array type, and that the function takes only one argument. 
+For reduce ...   *TBA*   ...
+
+
 \subsection*{Codegen for Map and Reduce}
-Our approach for Map is we are making to iterators for our arrays, one for argument array and another for result array. They are set to the address of the array, which we got by compiling the array argument and placing the address in "addr\_reg". The iterator for the result array is set to point at the place of the result address.\\
+Our approach for Map is we are making two iterators for our arrays, one for argument array and another for result array. They are set to the address of the array, which we got by compiling the array argument and placing the address in "addr\_reg". The iterator for the result array is set to point at the place of the result address.\\
 Then we use Mips.LW on "addr\_reg" to get the size of result array and store it at the place address. Since our iterators is pointing at same element index for both result and argument array, we simply load the element from argument array and apply the given function on it and store it at the address pointed by our result array iterator. For applying function on a given argument we have created a mutually recursive function "CompileFunArg" which generates the required Mips code for that.\\
 In order to generic code for different types we are supporting (char, integer and bool) we either have to use Mips.LW or Mips.LB same goes for store operations. The solution was to create two functions mipsStore and mipsLoad that both takes a type is argument and returns the correct Mips operation.\\
 Then we simply create a "while" loop where in at the start checks if our index variable is greater then the size of the array, if so we jump to the end of the code. If not we load the element from address pointed from "r\_itx" and call CompileFunArg with the requited argument. Last we store the result at the address pointed by "r\_ity", the we add the correct offset to our address pointers depending on type and jump back to the beginning of the loop. \\ \\
