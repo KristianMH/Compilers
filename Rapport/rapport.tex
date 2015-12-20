@@ -95,7 +95,12 @@ Concerning map we make sure that the functions input type matches the array type
 For reduce we are checking that every element has the same type and the function takes two arguments and returns a single, which is same type.
 
 
-\subsection*{Codegen for Map and Reduce}
+\subsection*{Codegen}
+Generating the mips code for the logical ’AND’ and ’OR’, we choose to set the result to
+’0’ initially indication false. By doing this we can implement short circuiting by skipping
+the rest of the calculations if we evaluate the first argument to be false. Thereby leaving
+the rsult at ’0’(false). Similarly for ’OR’\\
+
 Our approach for Map is we are making two iterators for our arrays, one for argument array and another for result array. They are set to point to the address' of the arrays, we get the adress for the argument array by compiling the array argument and placing the address in "addr\_reg".
 \\
 Then we use Mips.LW on "addr\_reg" to get the size of result array and store it at the place address. Since our iterators is pointing at same element index for both result and argument array, we simply load the element from argument array and apply the given function on it and store it at the address pointed by our result array iterator. For applying function on a given argument we have created a mutually recursive function "CompileFunArg" which generates the required Mips code for that.\\
