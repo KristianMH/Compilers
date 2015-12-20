@@ -573,7 +573,7 @@ fun compileExp e vtable place =
         val r_i   = newName "R_i"
         val r_tempx = newName "R_tempx"
         val r_temp = newName "R_temp"
-        val init_iterators = [Mips.ADDI(r_itx, arr_reg, "4"),
+        val init_iterators = [Mips.ADDI(r_itx, arr_reg, "4"),(* skip length*)
                               Mips.MOVE(place, neutral_reg),
                               Mips.MOVE(r_i, "0")]
         val loop_beg = newName "loop_beg"
@@ -583,7 +583,7 @@ fun compileExp e vtable place =
                           Mips.BGEZ (r_temp, loop_end)]                        
         val loop_body=  [mipsLoad(elem_size)(r_tempx, r_itx, "0"), 
                          Mips.ADDI(r_itx, r_itx, elem_size_string)] @
-                       (* Function magic which saves result in place *)
+                       (* Function call which saves result in place *)
                         compileFunArg(binop, [place, r_tempx], vtable, place, pos) @
                        [ Mips.ADDI(r_i, r_i, "1"),
                          Mips.J loop_beg,
@@ -600,7 +600,6 @@ and compileFunArg (FunName name, args, vtable(*used for lamda expression*), plac
     in
       applyRegs(name, args, temp_reg, pos) @ [Mips.MOVE(place, temp_reg)]
     end
-        (* Lambda expression case!*)
   | compileFunArg (Lambda (ret_type, params, body,_),args, vtable, place, pos) =
     let
       val vtable' = bindArgsToVtab params args vtable

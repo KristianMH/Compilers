@@ -58,11 +58,7 @@ fun printable (Int) = true
   | printable (Array Char) = true
   | printable _ = false  (* For all other array types *)
                       
-(* returns the element type of an Array *)
-fun getEleType Int = Int
-  | getEleType Bool = Bool
-  | getEleType Char = Char
-  | getEleType (Array x) = x
+
                                       
 (* Type-check the two operands to a binary operator - they must both be of type 't' *)
 fun checkBinOp ftab vtab (pos, t, e1, e2) =
@@ -221,6 +217,7 @@ and checkExp ftab vtab (exp : In.Exp)
     | In.Map (f, arr_exp, _, _, pos)
       => let val (f_dec, ret_type, arg_type) = checkFunArg (f, vtab, ftab, pos)
              val (arr_type, arr_dec) = checkExp ftab vtab arr_exp
+             (* checks that the array expression is an array and return type of elements*)
              val el_type = case arr_type of
                                 Array t => t
                               | _ => raise Error ("Map argument is not an array"^ppType arr_type, pos)
@@ -235,21 +232,24 @@ and checkExp ftab vtab (exp : In.Exp)
       => let val (f_dec, ret_type, arg_type) = checkFunArg (f, vtab, ftab, pos)
              val (arr_type, arr_dec) = checkExp ftab vtab arr_exp
              val (n_type, n_dec) = checkExp ftab vtab n_exp
+             (* checks that the array expression is an array and return type of elements*)
              val el_type = case arr_type of
                                 Array t => t
                               | _ => raise Error ("Reduce: wrong argument type"
                                                   ^ppType arr_type^ "is not an array", pos)
+             (* Checks the type of the neutral element. *)
              val neutral_elem = if n_type = el_type
                                 then n_type
                                 else raise Error("Reduce: Wrong neutral element type"
                                                 ^ppType n_type^ "is not matching", pos)
                                     
          in
-           (* TBA*)
+           (* check function arguments and return-type aswell it only takes two arguments.*)
            if length(arg_type) =2 andalso (hd(arg_type)) = el_type
               andalso el_type = ret_type andalso List.nth(arg_type, 1) = el_type
            then (ret_type, Out.Reduce(f_dec, n_dec, arr_dec, ret_type, pos))
-           else raise Error ("Reduce: wrong argument type"^ ppType arr_type,pos)
+           else raise Error ("Reduce: wrong function argument type"
+                             ^ ppType ret_type,pos)
          end
 
 and checkFunArg (In.FunName fname, vtab, ftab, pos) =
